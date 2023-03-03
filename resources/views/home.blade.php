@@ -1,7 +1,5 @@
 <x-header-and-nav>
-    @auth
-        <x-allclients :user="$user" />
-    @else
-        <x-link-to-access />
-    @endauth
+
+    <x-user-components.link-to-access />
+
 </x-header-and-nav>

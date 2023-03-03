@@ -44,8 +44,6 @@ return [
     /*
      Date Format
     */
-    'date_format' => 'd/m/Y',
-    'date_format_javascript' => 'DD/MM/YYYY',
 
 
     /*
@@ -74,7 +72,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Sao_Paulo',
 
     /*
     |--------------------------------------------------------------------------
@@ -181,6 +179,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Clockwork\Support\Laravel\ClockworkServiceProvider::class
 
     ],
 

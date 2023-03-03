@@ -1,0 +1,25 @@
+Banco de dados Clientela Bar do Véio
+
+O intuito desse banco de dados é armazenar dados simples sobre clientes de um bar. 
+Dados pessoais para simples identificação de clientes e maior foco nos hábitos de 
+consumo deste. Nome e celular somente num primeiro momento. 
+O banco também vai monitorar os produtos que fazem parte do estoque e quais estão sendo
+mais comercializados. 
+Será preciso uma tabela que possa ser inseridos os nomes dos produtos assim como 
+será preciso uma coluna 'vendas_totais' atualizada cada vez que o cliente efetuar uma compra
+e essa tabela também deverá conter a coluna 'preço' assim como a coluna 'updated_at.
+Cada venda adicionada pelo cliente atualiza a coluna 'vendas_totais' na tabela produtos
+e também a tabela compras 
+
+Entidades:
+ - Clientes
+ - Produtos
+ - Funcionários
+
+Ações:
+ - Vendas
+ - Monitoramento de estoque
+
+Relacionamentos
+ - Clientes Produtos
+ - Produtos vendas

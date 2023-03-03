@@ -18,10 +18,11 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('celular')->unique();
             $table->string('password');
-            $table->boolean('isadmin')->nullable();
-            $table->boolean('isfunc')->nullable();
-            $table->rememberToken();
-            $table->string('created_at');
+            $table->boolean('isadmin')
+                  ->nullable()->default(false);
+            $table->boolean('isfunc')
+                  ->nullable()->default(false);
+            $table->date('created_at');
         });
     }
 
