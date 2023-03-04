@@ -8,10 +8,6 @@ class Home extends Controller
         return view('home');
     }
 
-    public function enterForm() {
-        return view('components.forms.enterform');
-    }
-
     public function userAccess() {
         $attributes = request()->validate([
             'celular' => 'required|min:11|max:11',

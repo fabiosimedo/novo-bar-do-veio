@@ -1,4 +1,3 @@
-<x-header-and-nav>
 <form action="/entrar" method="post">
     @csrf
 
@@ -36,19 +35,9 @@
         </div>
 
         <button type="submit"
-                class="btn btn-outline-primary mt-3 px-5 py-3"
+                class="btn btn-outline-primary mt-5 px-5 py-3"
                 style="width: 100%"
         >Entrar</button>
 
     </fieldset>
 </form>
-
-<div>
-    <p class="text-center mt-3">OU</p>
-        <a onclick="history.back()"
-           class="btn btn-outline-primary mt-3 px-5 py-3"
-           style="width: 100%"
-        >VOLTAR</a>
-</div>
-
-</x-header-and-nav>

@@ -21,25 +21,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// users route
-Route::get('/', [Home::class, 'index'])->name('home');
-Route::get('entrar', [Home::class, 'enterForm'])->name('login');
+Route::get('/', [Home::class, 'index'])->name('login');
 Route::post('entrar', [Home::class, 'userAccess']);
 
-                ##3#########################################
-
-// admin routes
-
-// create clients
 Route::get('create', [CreateCient::class, 'createClientForm'])
        ->middleware(CheckPermission::class)->name('create-client');
 Route::post('create', [CreateCient::class, 'createClient'])
        ->middleware(CheckPermission::class);
-/// create client end
 
-                ###################################3###########
-
-//// managing user1s purshases
 Route::get('autenticado', [User::class, 'index'])->name('user-area')->middleware('auth');
 Route::post('logout', [User::class, 'destroy']);
 

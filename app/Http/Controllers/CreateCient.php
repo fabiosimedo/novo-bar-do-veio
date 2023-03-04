@@ -15,10 +15,10 @@ class CreateCient extends Controller
             'name' => 'required|min:4',
             'celular' => 'required|max:11|unique:users,celular',
             'password' => 'required|min:6|max:8',
-            'created_at' => date(now()) ///data de criação de usuário não funciona
         ]);
 
         $attributes['password'] = bcrypt($attributes['password']);
+        $attributes['created_at'] = date(now());
 
         User::create($attributes);
 

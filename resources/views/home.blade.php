@@ -1,5 +1,5 @@
 <x-header-and-nav>
 
-    <x-user-components.link-to-access />
+    <x-forms.enterform />
 
 </x-header-and-nav>

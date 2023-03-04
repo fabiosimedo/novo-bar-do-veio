@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -28,16 +27,20 @@
 
                     <div class="collapse navbar-collapse" id="navbarColor02">
 
-                        <form class="d-flex bt-5">
-                            <input class="form-control me-sm-2 mt-3 py-3"
-                                type="text"
-                                placeholder="Procurar por nome ou data"
-                                {{-- nome admin func data cliente --}}
-                                autofocus >
-                        </form>
+                        @auth
 
-                        <a href=""
-                           class="badge badge-warning py-3 mt-3">VOLTAR PARA O SITE DO BAR</a>
+                            <form class="d-flex bt-5 mb-5">
+                                <input class="form-control me-sm-2 mt-3 py-3"
+                                    type="text"
+                                    placeholder="Procurar por nome ou data"
+                                    {{-- nome admin func data cliente --}}
+                                    autofocus >
+                            </form>
+
+                        @endauth
+
+                        <a href="https://fabiosimedo.github.io/bar-do-veio/index.html"
+                           class="py-3 mt-5 h5">VOLTAR PARA O SITE DO BAR</a>
 
                     </div>
                 </div>
