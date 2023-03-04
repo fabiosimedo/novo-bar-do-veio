@@ -15,6 +15,7 @@
     </form>
 
     <div class="d-flex flex-wrap mt-4 mb-4">
+
         @if (auth()->user()->isadmin)
             <a href="/create"
                class="btn btn-primary-outline py-4">Cria Usuário</a>
@@ -23,11 +24,12 @@
             <a href="/checkstorage"
                class="btn btn-primary-outline py-4">Consultar Estoque</a>
         @endif
+
     </div>
 
     @foreach ($users as $user)
         <ul class="list-group">
-           <a href="user/{{ $user->user_id }}"style="text-decoration: none">
+           <a href="user/{{ $user->user_id }}" style="text-decoration: none">
 
                 <li class="list-group-item mt-1 py-3 d-flex justify-content-between">
                     {{ $user->name }}
@@ -37,4 +39,5 @@
            </a>
         </ul>
     @endforeach
+
 </x-header-and-nav>

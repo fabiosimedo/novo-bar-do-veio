@@ -19,7 +19,7 @@
 
                 <div>
                     <p class="h3 text-center">
-                        {{ $user[0]->name }}
+                        {{ $user->name }}
                     </p>
                 </div>
 
@@ -38,16 +38,14 @@
         @if (auth()->user()->isadmin || auth()->user()->isfunc)
 
             <div>
-                <a href="/insertproducts/{{ $user[0]->user_id }}"
+                <a href="/insertproducts/{{ $user->user_id }}"
                 class="btn btn-danger py-3">Nova Venda</a>
             </div>
 
             <div>
 
-                {{-- @if($sum > 0) --}}
-                <a href="/pagamentos/{{ $user[0]->user_id }}"
+                <a href="/pagamentos/{{ $user->user_id }}"
                         class="btn btn-success py-3">Pagamentos</a>
-                {{-- @endif --}}
 
             </div>
 
@@ -59,7 +57,7 @@
 
                     <input type="hidden"
                            name="user_id"
-                           value="{{ $user[0]->user_id }}">
+                           value="{{ $user->user_id }}">
 
                     <input type="submit"
                             class="btn btn-info py-3" value="Edita Senha" />
@@ -81,14 +79,5 @@
             :payments="$payments"
              />
     </div>
-
-    <script>
-
-        const alerta = document.querySelector('#alertMessage')
-        setTimeout(() => {
-            alerta.remove()
-        }, 5000);
-
-    </script>
 
 </x-header-and-nav>

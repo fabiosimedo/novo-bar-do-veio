@@ -58,13 +58,18 @@
         </div>
 
         <script>
+
             const alerta = document.querySelector('#alertMessage')
 
             if(alerta !== null) {
+
                 setTimeout(() => {
                     alerta.remove()
                 }, 4000);
+
             }
+
         </script>
+
     </body>
 </html>

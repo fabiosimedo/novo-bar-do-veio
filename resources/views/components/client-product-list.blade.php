@@ -1,4 +1,3 @@
-
 @if (!auth()->user()->isadmin && !auth()->user()->isfunc)
     <div class="alert alert-dark mt-2" role="alert">
         <b>Acompanhe sua situação abaixo.</b>
@@ -43,13 +42,13 @@
 
 @foreach ($sales as $sale)
 
-    @if ($user[0]->user_id === $sale->user_fk)
+    @if ($user->user_id === $sale->user_fk)
     <ul class="list-group mt-2">
 
         <form action="/data" method="post">
             @csrf
 
-            <input type="hidden" name="user" value="{{ $user[0]->user_id }}">
+            <input type="hidden" name="user" value="{{ $user->user_id }}">
             <input type="hidden"
                    name="date"
                    value="{{ $sale->sale_date }}"

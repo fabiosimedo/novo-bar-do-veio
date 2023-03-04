@@ -21,32 +21,35 @@ class User extends Controller
     public function index(ModelsUser $user)
     {
 
-        $userDetail = ModelsUser::where('user_id', auth()->user()->user_id)->get();
-
-        $sale = Sales::where('saled_products_fk', auth()->user()->user_id)->get();
-
-        $products = SaledProducts::where('saled_client', auth()->user()->user_id)->get();
-
-
         if(!auth()->user()) {
             return redirect()->back()
                     ->with('logado', 'Não autorizado...');
         }
 
         if(auth()->user()->isadmin || auth()->user()->isfunc) {
+
             return view('components.admin-components.admin-panel', [
                 'users' => $user->orderBy('name', 'ASC')->get()
             ]);
+
         } else {
+
+            $userDetail = ModelsUser::where('user_id', auth()->user()->user_id)->get();
+
+            $sale = Sales::where('saled_products_fk', auth()->user()->user_id)->get();
+
+            $products = SaledProducts::where('saled_client', auth()->user()->user_id)->get();
+
             return view('components.user-components.user-page',  [
                 'sales' => $sale,
-                'user' => $userDetail,
+                'user' => $userDetail[0],
                 'products' => $products,
                 'sum' =>
                     Payments::showTotalClientDebit($userDetail[0]->user_id),
                 'payments' =>
                     Payments::showPayments($userDetail[0]->user_id)
             ]);
+
         }
     }
 
@@ -72,7 +75,7 @@ class User extends Controller
         }
 
         return view('components.single-client', [
-            'user' => $user,
+            'user' => $user[0],
             'sales' =>  Payments::show($id),
             'products' => $saled,
             'sum' => Payments::showTotalClientDebit($id),
