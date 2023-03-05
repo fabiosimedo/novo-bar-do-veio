@@ -41,8 +41,8 @@ class User extends Controller
             $products = SaledProducts::where('saled_client', auth()->user()->user_id)->get();
 
             return view('components.user-components.user-page',  [
-                'sales' => $sale,
                 'user' => $userDetail[0],
+                'sales' => $sale,
                 'products' => $products,
                 'sum' =>
                     Payments::showTotalClientDebit($userDetail[0]->user_id),
@@ -62,17 +62,14 @@ class User extends Controller
      */
     public function show($id)
     {
-
-        // return Payments::show($id);
-
-        $saled = SaledProducts::where('saled_client', $id)->get();
-
-        $user = ModelsUser::where('user_id', $id)->get();
-
         if(!auth()->user()) {
             return redirect()->back()
                     ->with('logado', 'Não autorizado...');
         }
+
+        $saled = SaledProducts::where('saled_client', $id)->get();
+
+        $user = ModelsUser::where('user_id', $id)->get();
 
         return view('components.single-client', [
             'user' => $user[0],

@@ -29,7 +29,7 @@ Route::get('create', [CreateCient::class, 'createClientForm'])
 Route::post('create', [CreateCient::class, 'createClient'])
        ->middleware(CheckPermission::class);
 
-Route::get('autenticado', [User::class, 'index'])->name('user-area')->middleware('auth');
+Route::get('/autenticado', [User::class, 'index'])->name('user-area')->middleware('auth');
 Route::post('logout', [User::class, 'destroy']);
 
 Route::get('user/{user:id}', [User::class, 'show'])
