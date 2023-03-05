@@ -22,17 +22,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [Home::class, 'index'])->name('login');
-Route::post('entrar', [Home::class, 'userAccess']);
+Route::post('/entrar', [Home::class, 'userAccess']);
 
-Route::get('create', [CreateCient::class, 'createClientForm'])
+Route::get('/create', [CreateCient::class, 'createClientForm'])
        ->middleware(CheckPermission::class)->name('create-client');
-Route::post('create', [CreateCient::class, 'createClient'])
+Route::post('/create', [CreateCient::class, 'createClient'])
        ->middleware(CheckPermission::class);
 
-Route::get('/autenticado', [User::class, 'index'])->name('user-area')->middleware('auth');
-Route::post('logout', [User::class, 'destroy']);
+Route::get('/autenticado', [User::class, 'index'])->name('user-area');
+Route::post('/logout', [User::class, 'destroy']);
 
-Route::get('user/{user:id}', [User::class, 'show'])
+Route::get('/user/{id}', [User::class, 'show'])
        ->name('single-client');
 Route::get('/insertproducts/{user:id}', [User::class, 'create'])
         ->name('insertproducts');
@@ -47,7 +47,7 @@ Route::post('/destoydate', [User::class, 'destoydate']);
 
 Route::get('/updatepassword', [EditClient::class, 'index'])
         ->middleware('auth')->name('update-password');
-Route::post('newpassword', [EditClient::class, 'editClientPassword']);
+Route::post('/newpassword', [EditClient::class, 'editClientPassword']);
 
 
 ##### rotas de pagamentos
@@ -55,17 +55,17 @@ Route::get('/pagamentos/{id}', [Payments::class, 'index']);
 Route::post('/pagamentos', [Payments::class, 'create']);
 
 ///// managing products
-Route::get('addproduct', [ProductInsert::class, 'index'])
+Route::get('/addproduct', [ProductInsert::class, 'index'])
        ->middleware(CheckPermission::class);
-Route::post('addproduct', [ProductInsert::class, 'create']);
-Route::get('checkstorage', [ProductInsert::class, 'show'])
+Route::post('/addproduct', [ProductInsert::class, 'create']);
+Route::get('/checkstorage', [ProductInsert::class, 'show'])
        ->middleware(CheckPermission::class)->name('checkstorage');
 
 
        /////criar view para edição de produtos
 Route::get('/editproduct/{product:product_id}', [ProductInsert::class, 'edit'])
       ->middleware(CheckPermission::class)->name('editproducts');
-Route::get('product-detail/{product:product_id}', [ProductInsert::class, 'edit'])
+Route::get('/product-detail/{product:product_id}', [ProductInsert::class, 'edit'])
        ->middleware('auth');
-Route::get('product-delete/{product:product_id}', [ProductInsert::class, 'destroy'])
+Route::get('/product-delete/{product:product_id}', [ProductInsert::class, 'destroy'])
        ->middleware('auth');
