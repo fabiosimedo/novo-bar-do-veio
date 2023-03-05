@@ -14,7 +14,6 @@ class Home extends Controller
             'password' => 'required|min:6|max:6'
         ]);
 
-
         if(auth()->attempt($attributes)) {
             $user = auth()->user()->name;
 

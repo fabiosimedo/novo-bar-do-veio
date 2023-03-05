@@ -99,7 +99,7 @@ class Payments extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function showPayments($id)
+    public static function showPayments($id)
     {
         return ModelsPayments::where('payment_client', $id)->get();
     }
