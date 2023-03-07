@@ -1,28 +1,32 @@
 <x-header-and-nav>
-    <div>
-        <p class="h2 text-info mt-3">
-            {{ auth()->user()->name }}
-            <p> Está visualizando a página de clientes</p>
-        </p>
+    <div class="d-flex justify-content-between">
+        <div>
+
+            <p class="h2 text-info mt-3">
+                {{ auth()->user()->name }}
+                <p> Está visualizando a página de clientes</p>
+            </p>
+
+        </div>
+        <form action="/logout" method="post" >
+            @csrf
+
+            <button
+                type="submit"
+                class="btn btn-primary-outline text-danger px-5 py-3 mt-3">SAIR</button>
+        </form>
     </div>
 
-    <form action="/logout" method="post" class="d-flex justify-content-end" >
-        @csrf
 
-        <button
-            type="submit"
-            class="btn btn-primary-outline text-danger px-5 py-3 mt-3">SAIR</button>
-    </form>
-
-    <div class="d-flex flex-wrap mt-4 mb-4">
+    <div class="d-flex justify-content-between py-3">
 
         @if (auth()->user()->isadmin)
             <a href="/create"
-               class="btn btn-primary-outline py-4">Cria Usuário</a>
+               class="btn btn-primary-outline py-2 px-3 mt-2">Usuário</a>
             <a href="/addproduct"
-               class="btn btn-primary-outline py-4">Inserir Produto</a>
+               class="btn btn-primary-outline py-2 px-3 mt-2">Produto</a>
             <a href="/checkstorage"
-               class="btn btn-primary-outline py-4">Consultar Estoque</a>
+               class="btn btn-primary-outline py-2 px-3 mt-2">Estoque</a>
         @endif
 
     </div>

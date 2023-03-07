@@ -25,7 +25,7 @@
 
                 <div>
                     <a href="/autenticado"
-                       class="btn btn-primary-outline px-5 py-4 mt-2">Voltar</a>
+                       class="btn btn-primary-outline px-5 py-3">Voltar</a>
                 </div>
 
             </li>
