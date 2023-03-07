@@ -136,7 +136,7 @@ class Payments extends Controller
      */
     public function update(Request $request, Payments $payments)
     {
-        //
+        return request()->input();
     }
 
     /**

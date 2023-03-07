@@ -17,13 +17,18 @@
 
             <div class="d-flex justify-content-around flex-wrap">
               @foreach ($products as $product)
-                <div class="mt-3 w-50 p-3">
-                  <p class="h3">{{ $product->product_name }}</p>
+                <div class="mt-2 col-6 p-3">
+                  <p class="h4">{{ $product->product_name }}</p>
                   <input type="text"
                          name="products[{{ $product->product_name }}]"
                          value="{{ old('products[]') }}"
                          placeholder="Quantidade"
-                         class="form-control-lg w-75 p-3">
+                         class="form-control-lg"
+                         style="display: block;
+                                margin-left: auto;
+                                margin-right: auto;
+                                width: 110%;"
+                    >
                 </div>
               @endforeach
             </div>

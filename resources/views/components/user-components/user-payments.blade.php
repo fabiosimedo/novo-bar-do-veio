@@ -7,13 +7,13 @@
             <p class="h2 text-info">{{ auth()->user()->name }}</p>
             <p>Está registrando um pagamento para </p>
             <div class="d-flex justify-content-around">
-                <a class="btn btn-outline-dark w-100 text-secondary"
+                <a class="col-6 text-secondary mt-4"
                     href="/user/{{ $user[0]->user_id }}">
 
                     {{ $user[0]->name }}</a>
 
                 <button
-                    class="btn btn-outline w-100 py-4">
+                    class="btn btn-outline col-6 py-4">
 
                     @if ($total <= 0)
 
@@ -22,7 +22,7 @@
 
                     @else
 
-                        <p class="text-white px-3">SALDO NEGATIVO</p>
+                        <p class="text-danger px-3">SALDO NEGATIVO</p>
                         <p class="text-danger" id="total">
 
                     @endif

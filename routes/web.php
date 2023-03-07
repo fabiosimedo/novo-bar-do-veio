@@ -53,6 +53,7 @@ Route::post('/newpassword', [EditClient::class, 'editClientPassword']);
 ##### rotas de pagamentos
 Route::get('/pagamentos/{id}', [Payments::class, 'index']);
 Route::post('/pagamentos', [Payments::class, 'create']);
+Route::post('/payallsale', [Payments::class, 'update']);
 
 ///// managing products
 Route::get('/addproduct', [ProductInsert::class, 'index'])

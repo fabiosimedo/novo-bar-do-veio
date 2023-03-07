@@ -30,6 +30,7 @@ class ProductInsert extends Controller
         $products = [
             'product_name' => request()->input('product_name'),
             'product_qtty' => request()->input('product_qtty'),
+            'product_cost_price' => request()->input('product_cost_price'),
             'product_price' => request()->input('product_price')
         ];
 

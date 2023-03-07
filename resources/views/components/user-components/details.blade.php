@@ -1,25 +1,44 @@
+{{-- @dd($details) --}}
 <x-header-and-nav>
 
 @if (isset($details[0]))
-    <p class="h2 text-center py-3">
-        {{ \Carbon\Carbon::parse($details[0]->saled_date)
-            ->format('d M Y - D') }}
-    </p>
+    <div class="d-flex justify-content-around">
+        <div class="h2 py-3">
+            {{ \Carbon\Carbon::parse($details[0]->saled_date)
+                ->format('d M Y - D') }}
+
+        </div>
+        <div class="text-end">
+            <button href="/user/{{ $details[0]->saled_client }}"
+            class="btn btn-outline-info mt-3 px-5">VOLTAR</button>
+        </div>
+    </div>
 
     <ul class="list-group mt-3 mb-3">
         <a href="/user/{{ $details[0]->saled_client }}"
             class="text-decoration-none text-uppercase">
             <li class="list-group-item d-flex justify-content-around">
+
                 <div class="text-start">
-                    Total dessa data
-                    <span class="btn btn-outline-danger px-3 m-3">
+                   <p>Total dessa data</p>
+                    <span class="btn btn-outline-danger px-3">
                         R$<span class="h3" id="total"></span>,00
                     </span>
                 </div>
-                <div class="text-end">
-                    <button href="/user/{{ $details[0]->saled_client }}"
-                    class="btn btn-outline-info mt-3">VOLTAR</button>
+
+                <div>
+                    <form action="payallsale" method="post">
+                        @csrf
+
+                        <input type="hidden" name="datavenda"
+                            @foreach ($details as $detail)
+                                value="{{ $detail }}"
+                            @endforeach >
+
+                        <button class="btn btn-outline-info p-3 mt-4">Pagar</button>
+                    </form>
                 </div>
+
             </li>
         </a>
     </ul>
@@ -98,7 +117,7 @@
                 const qtty = element.children[1].innerText
 
                 setTimeout(() => {
-                    if(confirm("DELETAR ESSA VENDA?\n\n Produtos - "
+                    if(confirm("DELETAR ESSA PRODUTO?\n\n Produtos - "
                                 +productName+"\n Quantidade - "+qtty)) {
                         e.target.submit()
                     } else {

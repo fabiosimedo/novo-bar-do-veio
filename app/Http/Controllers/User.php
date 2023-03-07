@@ -8,8 +8,6 @@ use App\Models\User as ModelsUser;
 use App\Models\SaledProducts;
 use App\Models\Sales;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Mockery\Undefined;
 
 class User extends Controller
 {

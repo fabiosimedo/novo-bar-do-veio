@@ -13,9 +13,16 @@
                     placeholder="Quantidade"
                     value="{{ old('product_qtty') }}" required>
 
+            <input type="number" name="product_cost_price"
+                    class="form-control mb-3"
+                    placeholder="Preço de Custo"
+                    value="{{ old('product_cost_price') }}"
+                    pattern="[0-9]+([\.,][0-9]+)?" step="0.01"
+                    required>
+
             <input type="number" name="product_price"
                     class="form-control mb-5"
-                    placeholder="Preço"
+                    placeholder="Preço de Venda"
                     value="{{ old('product_price') }}"
                     pattern="[0-9]+([\.,][0-9]+)?" step="0.01"
                     required>

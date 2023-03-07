@@ -17,6 +17,7 @@ class CreateProductsTable extends Migration
             $table->id('product_id');
             $table->text('product_name');
             $table->integer('product_qtty');
+            $table->decimal('product_cost_price',10,2);
             $table->decimal('product_price',10,2);
             $table->timestamps();
         });
