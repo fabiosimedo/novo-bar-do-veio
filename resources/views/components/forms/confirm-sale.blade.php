@@ -5,7 +5,7 @@
     <form action="/finish-sale" method="post">
         @csrf
         <div class="container">
-            <h5 class="modal-title"
+            <h5 class="modal-title py-3"
                 id="exampleModalLabel">
                 Confira as informações da venda</h5>
 
@@ -19,17 +19,19 @@
                             echo '';
                         } else {
                             echo "
-                            <li class='list-group-item d-flex
-                                       justify-content-between'>
-                                <div>
+                            <li class='d-flex mt-2
+                                       justify-content-center'>
+
+                                <div class='col-8'>
                                     <input type='text' value='$key'
-                                        class='form-control-lg w-150 p-3'
+                                        class='form-control'
                                         readonly>
                                 </div>
-                                <div>
+
+                                <div class=''>
                                     <input type='text' name='products[$key]'
                                            value='$product'
-                                           class='form-control-lg  w-100 p-3'
+                                           class='form-control'
                                            placeholder='$key'
                                            readonly>
                                 </div>
@@ -99,6 +101,3 @@
 
 </script>
 </x-header-and-nav>
-
-
-{{--  --}}

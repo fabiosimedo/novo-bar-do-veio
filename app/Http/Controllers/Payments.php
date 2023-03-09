@@ -136,7 +136,16 @@ class Payments extends Controller
      */
     public function update(Request $request, Payments $payments)
     {
-        return request()->input();
+        // return request()->input('datavenda');
+        $boolvalue = filter_var(request()->input('pago'), FILTER_VALIDATE_BOOLEAN);
+        return var_dump($boolvalue);
+        return request()->input('client');
+
+        /**
+         *
+         * se na table sale estiver true excluir os produtos relacionados
+         * com a data especificada e mandar para table pagos (ainda a ser criada)
+         */
     }
 
     /**

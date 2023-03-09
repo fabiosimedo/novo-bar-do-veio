@@ -23,55 +23,71 @@
 
 </div>
 
-<select class="form-select py-3" aria-label="Default select example">
-    <option selected>Consulte aqui seus Pagamentos pela Data</option>
-    @foreach ($payments as $payment)
+<div class="d-flex justify-content-around">
 
-        <option value="1" class="text-secondary h4">
-             {{ \Carbon\Carbon::parse($payment->payment_date)
-                            ->format('d M Y D') }}
-            --------- R$ {{ $payment->payment_value }}
-            - ({{ $payment->payment_receiver }})
-        </option>
+    <div class="col-5">
+    <p class="h3 text-center">Compras</p>
+    @foreach ($sales as $sale)
+
+        @if ($user->user_id === $sale->user_fk)
+        <ul class="list-group mt-2">
+
+            <form action="/data" method="post">
+                @csrf
+
+                <input type="hidden" name="user" value="{{ $user->user_id }}">
+                <input type="hidden"
+                    name="date"
+                    value="{{ $sale->sale_date }}"
+                    >
+
+                <button class="btn btn-outline-dark w-100 py-3">
+
+                    <li
+                    class="d-flex justify-content-around text-secondary">
+
+                        <span>
+                            {{ \Carbon\Carbon::parse($sale->sale_date)
+                                            ->format('d M Y') }}
+                        </span>
+
+                    </li>
+
+                </button>
+
+            </form>
+
+        </ul>
+
+        @endif
 
     @endforeach
+    </div>
 
-</select>
+    <div class="col-5">
+        <p class="h3 text-center">Pagamentos</p>
+        <ul class="list-group">
+        @foreach ($payments as $payment)
 
-
-
-@foreach ($sales as $sale)
-
-    @if ($user->user_id === $sale->user_fk)
-    <ul class="list-group mt-2">
-
-        <form action="/data" method="post">
-            @csrf
-
-            <input type="hidden" name="user" value="{{ $user->user_id }}">
-            <input type="hidden"
-                   name="date"
-                   value="{{ $sale->sale_date }}"
-                   >
-
-            <button class="btn btn-outline-dark w-100 py-3">
-
-                <li
-                class="d-flex justify-content-around text-secondary">
-                    <span>COMPRAS POR DATA</span>
-                    <span>
-                        {{ \Carbon\Carbon::parse($sale->sale_date)
-                                         ->format('d M Y') }}
+            <li class="list-group-item text-secondary">
+                {{ \Carbon\Carbon::parse($payment->payment_date)
+                                    ->format('d M Y D') }}
+                    <span class="badge badge-pill badge-secondary mt-2">
+                        R$ {{ $payment->payment_value }}
                     </span>
 
-                </li>
+                {{-- <p>
+                    <span class="badge badge-pill badge-secondary">
+                            {{ $payment->payment_receiver }}</span></p> --}}
+            </li>
 
-            </button>
+        @endforeach
+        </ul>
+    </div>
 
-        </form>
+</div>
 
-    </ul>
 
-    @endif
 
-@endforeach
+
+

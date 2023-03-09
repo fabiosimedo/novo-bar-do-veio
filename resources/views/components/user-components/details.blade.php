@@ -1,17 +1,20 @@
-{{-- @dd($details) --}}
+{{-- @dd($details[0]->saled_client) --}}
 <x-header-and-nav>
 
 @if (isset($details[0]))
+
     <div class="d-flex justify-content-around">
+
         <div class="h2 py-3">
             {{ \Carbon\Carbon::parse($details[0]->saled_date)
                 ->format('d M Y - D') }}
 
         </div>
         <div class="text-end">
-            <button href="/user/{{ $details[0]->saled_client }}"
-            class="btn btn-outline-info mt-3 px-5">VOLTAR</button>
+            <a href="/user/{{ $details[0]->saled_client }}"
+                class="btn btn-outline-info mt-3 px-5">VOLTAR</a>
         </div>
+
     </div>
 
     <ul class="list-group mt-3 mb-3">
@@ -31,9 +34,11 @@
                         @csrf
 
                         <input type="hidden" name="datavenda"
-                            @foreach ($details as $detail)
-                                value="{{ $detail }}"
-                            @endforeach >
+                                value="{{ $details[0]->saled_date }}">
+                        <input type="hidden" name="client"
+                                value="{{ $details[0]->saled_client }}">
+                        <input type="hidden" name="pago"
+                                value="1">
 
                         <button class="btn btn-outline-info p-3 mt-4">Pagar</button>
                     </form>
@@ -117,7 +122,7 @@
                 const qtty = element.children[1].innerText
 
                 setTimeout(() => {
-                    if(confirm("DELETAR ESSA PRODUTO?\n\n Produtos - "
+                    if(confirm("DELETAR ESSE PRODUTO?\n\n Produtos - "
                                 +productName+"\n Quantidade - "+qtty)) {
                         e.target.submit()
                     } else {

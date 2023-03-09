@@ -15,7 +15,7 @@
             @endif
 
 
-            <li class="list-group-item mt-1 d-flex justify-content-between">
+            <li class="list-group-item d-flex justify-content-between">
 
                 <div>
                     <p class="h3 text-center">
