@@ -27,7 +27,6 @@ class Payments extends Controller
             $payment = ModelsPayments::where('payment_client', $id)
                             ->where('payment_date', $date[0])
                             ->sum('payment_value');
-                            // return $payment;
 
             if(empty($payment[0])) {
 
