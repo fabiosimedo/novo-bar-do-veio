@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\SaledProducts;
 use App\Models\User;
 
 class CreateCient extends Controller
@@ -24,6 +26,45 @@ class CreateCient extends Controller
 
         return redirect('/autenticado')
                 ->with('logado', 'OK novo usuário cadastrado!');
+
+    }
+
+    public function createClientAvulso() {
+
+        return view('components.forms.cad-form-create', [
+            'products' => Product::all()
+        ]);
+
+    }
+
+    public function clientAvulsoRegister() {
+
+        return view('components.forms.confirm-sale', [
+            'products' => request()->input('products')
+        ]);
+
+    }
+
+    public function clientAvulsoConfirm() {
+
+
+        foreach(request()->input('products') as $key => $value) {
+
+            $teste =  Product::where('product_name', $key)->pluck('product_price');
+
+            SaledProducts::create([
+                'saled_name' =>  $key,
+                'saled_qtty' => $value,
+                'saled_price' => $teste[0],
+                'saled_client' => '',
+                'saler' => auth()->user()->name,
+                'saled_date' => date(now())
+            ]);
+        }
+
+        return redirect('autenticado')
+                ->with('venda_a_vulsa', 'OK venda avulsa cadastrada!');
+
     }
 
     public function editClientForm(){}

@@ -1,7 +1,9 @@
-{{-- @dd(request()->input()) --}}
 <x-header-and-nav>
 
 <div>
+    @if (request()->routeIs('create-client-avulso-confirm'))
+        <form action="/create/avulso" method="post">
+    @endif
     <form action="/finish-sale" method="post">
         @csrf
         <div class="container">
@@ -41,13 +43,26 @@
                     @endphp
                 </div>
 
-                <p class="mt-4 h4">
-                    Essa quatidade está correta para
-                    <p>
-                        <span class="text-info h1">
-                            {{ request()->input('user_name') }}?</span>
+
+                @if (request()->routeIs('create-client-avulso-confirm'))
+
+                    <p class="mt-4 mb-4 h4" id="user-confirm">
+                        <span class="text-info">{{ auth()->user()->name }}</span>
+                        registrando venda Avulsa
                     </p>
-                </p>
+
+                @else
+                    <p id="user-confirm">
+                        {{ auth()->user()->name }}
+                        registrando venda para
+                       <p><span class="text-info h1">
+                            {{ request()->input('user_name') }}?</span></p>
+                    </p>
+
+
+                @endif
+
+
             </ul>
 
             <input type="hidden"
@@ -58,44 +73,43 @@
                     name="name"
                     value="{{ request()->name }}">
 
-            <div class="d-flex justify-content-between">
-                <button onclick="history.back()"
-                        type="button"
-                        class="btn btn-secondary py-2"
-                        data-dismiss="modal" id="corrigir">
-                    <span class="h1 px-3">Corrigir</span>
-                </button>
+            <div class="d-flex justify-content-around">
 
                 <button type="submit"
                         class="btn btn-primary py-2"
                         id="submit-button">
                     <span class="h1 px-5">OK</span>
                 </button>
+
+                <div class="text-center mt-4">
+                    <a onclick="history.back()"
+                        class="btn btn-primary-outline mt-3">
+                        <span class="h1 px-5">Voltar</span></a>
+                </div>
+
             </div>
         </div>
     </form>
 
-    <div class="text-center mt-4">
-        <a onclick="history.back()"
-            class="btn btn-primary-outline mt-3">
-            <span class="h1 px-5">Voltar</span></a>
-    </div>
+
 </div>
 
 <script>
 
     const form_group = document.querySelector('#form-group')
     const submit_button = document.querySelector('#submit-button')
-    const corrigir = document.querySelector('#corrigir')
-    const small = document.querySelector('#small')
+    const warning = document.querySelector('#user-confirm')
+    const exampleModalLabel = document.querySelector('#exampleModalLabel')
 
-    if(form_group.children.length === 0) {
+    console.log(form_group.children.length)
+
+    if(form_group.children.length == 0) {
         form_group.innerHTML = `
         <div class="alert alert-secondary mt-5 mb-5" role="alert">
             Volte para a tela anterior e insira pelo menos um produto...</div>`
 
-        small.remove()
-        corrigir.remove()
+        exampleModalLabel.remove()
+        warning.remove()
         submit_button.remove()
     }
 

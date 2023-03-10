@@ -29,6 +29,17 @@ Route::get('/create', [CreateCient::class, 'createClientForm'])
 Route::post('/create', [CreateCient::class, 'createClient'])
        ->middleware(CheckPermission::class);
 
+Route::get('/create/avulso', [CreateCient::class, 'createClientAvulso'])
+       ->middleware(CheckPermission::class)->name('create-client-avulso');
+Route::get('/create/confirm', [CreateCient::class, 'clientAvulsoRegister'])
+       ->middleware(CheckPermission::class)->name('create-client-avulso-confirm');
+Route::post('/create/avulso', [CreateCient::class, 'clientAvulsoConfirm'])
+       ->middleware(CheckPermission::class);
+
+        /// arrumar para isfunc tambem acessar checkpermissiom
+
+
+
 Route::get('/autenticado', [User::class, 'index'])->name('user-area');
 Route::post('/logout', [User::class, 'destroy']);
 

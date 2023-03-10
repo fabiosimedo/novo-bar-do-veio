@@ -71,8 +71,58 @@
 </form>
 @endif
 
+@if (request()->routeIs('create-client-avulso'))
+<form action="/create/confirm">
+
+
+    <div class="form mt-2 mb-2">
+        <div class="pb-2 text-bold">
+            <button class="btn btn-outline-info mb-2">
+                {{ auth()->user()->name }}</button>
+
+                <span class="h4"> registrando venda Avulsa</span>
+
+        </div>
+
+        <form method="post"
+                action="{{ request()->routeIs('insertproducts-post') }}"
+                id="form"
+                class="form-group mt-3">
+                @csrf
+
+            <div class="d-flex justify-content-around flex-wrap">
+                @foreach ($products as $product)
+                <div class="mt-2 col-6 p-3">
+                    <p class="h4">{{ $product->product_name }}</p>
+                    <input type="text"
+                            name="products[{{ $product->product_name }}]"
+                            value="{{ old('products[]') }}"
+                            placeholder="Quantidade"
+                            class="form-control-lg"
+                            id="form-avulso"
+                            style="display: block;
+                                margin-left: auto;
+                                margin-right: auto;
+                                width: 110%;"
+                    >
+                </div>
+                @endforeach
+            </div>
+
+            <button type="submit"
+                    class="btn btn-outline-primary mt-4 btn-lg py-3"
+                    style="width: 100%"
+                    data-toggle="modal"
+                    data-target="#exampleModal">Cadastrar Venda</button>
+        </form>
+
+    </div>
+
+@endif
+
 <div class="text-center mt-4">
     <a onclick="history.back()" class="btn btn-primary-outline mt-4">Voltar</a>
 </div>
+
 
 </x-header-and-nav>

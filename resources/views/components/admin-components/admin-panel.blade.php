@@ -36,7 +36,7 @@
         @if (auth()->user()->isfunc || auth()->user()->isadmin)
         <div>
 
-            <a href="/checkstorage"
+            <a href="/create/avulso"
                class="btn btn-primary-outline py-2 px-3 m-2 w-100">Venda Avulso</a>
 
         </div>

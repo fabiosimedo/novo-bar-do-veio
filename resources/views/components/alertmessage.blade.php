@@ -53,3 +53,10 @@
         {{ session('pagamento') }}
     </div>
 @endif
+
+@if (session()->has('venda_a_vulsa'))
+    <div class="alert alert-info mt-3"
+         role="alert" id="alertMessage">
+        {{ session('venda_a_vulsa') }}
+    </div>
+@endif

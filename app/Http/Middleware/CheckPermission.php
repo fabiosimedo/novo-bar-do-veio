@@ -19,18 +19,15 @@ class CheckPermission
         // TODO: Add your logic here.
 
 
-        $admin = User::where('isadmin', 1)->pluck('name');
+        $admin = User::where('name', auth()->user()->name)->pluck('name');
 
-        // if(auth()->user()->name !== $admin[0]) {
-        //     return redirect()->back()
-        //            ->with('logado', 'Sem permissão de acesso para esta página...');
-        // }
 
-        if(!auth()->user() || $admin[0] !== auth()->user()->name) {
-            return redirect()->back()
-            ->with('logado', 'Você não permissão para acessar essa página...');
+        if($admin[0] == 'Fabio Simedo' || $admin[0] == 'Kezzia Avigo') {
+
+            return $next($request);
         }
 
-        return $next($request);
+        return redirect()->back()
+            ->with('logado', 'Você não permissão para acessar essa página...');
     }
 }
