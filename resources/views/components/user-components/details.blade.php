@@ -29,20 +29,24 @@
                     </span>
                 </div>
 
-                <div>
-                    <form action="payallsale" method="post">
-                        @csrf
+                @if (auth()->user()->isadmin)
 
-                        <input type="hidden" name="datavenda"
-                                value="{{ $details[0]->saled_date }}">
-                        <input type="hidden" name="client"
-                                value="{{ $details[0]->saled_client }}">
-                        <input type="hidden" name="pago"
-                                value="1">
+                    <div>
+                        <form action="payallsale" method="post">
+                            @csrf
 
-                        <button class="btn btn-outline-info p-3 mt-4">Pagar</button>
-                    </form>
-                </div>
+                            <input type="hidden" name="datavenda"
+                                    value="{{ $details[0]->saled_date }}">
+                            <input type="hidden" name="client"
+                                    value="{{ $details[0]->saled_client }}">
+                            <input type="hidden" name="pago"
+                                    value="1">
+
+                            <button class="btn btn-outline-info p-3 mt-4">Pagar</button>
+                        </form>
+                    </div>
+
+                @endif
 
             </li>
         </a>

@@ -7,15 +7,19 @@
 <div
     class="alert alert-dark mt-3 d-flex justify-content-end text-danger" role="alert">
 
-    @if ($sum <= 0)
+    @if ($sum < 0)
 
         <span class="text-white px-3">SALDO POSITIVO</span>
         <span class="text-success" id="total">
 
-    @else
+    @elseif ($sum > 0)
 
-        <span class="text-white px-3">SALDO NEGATIVO</span>
+        <span class="text-white px-3">SALDO DEVEDOR</span>
         <span class="text-danger" id="total">
+
+    @elseif ($sum == 0)
+
+        <span class="text-white">Você não tem débitos registrados!
 
     @endif
         R$ {{ $sum }}
@@ -69,7 +73,7 @@
         <ul class="list-group">
         @foreach ($payments as $payment)
 
-            <li class="list-group-item text-secondary">
+            <li class="list-group-item text-secondary  p-3">
                 {{ \Carbon\Carbon::parse($payment->payment_date)
                                     ->format('d M Y D') }}
                     <span class="badge badge-pill badge-secondary mt-2">
