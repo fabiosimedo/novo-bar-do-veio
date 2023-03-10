@@ -14,16 +14,33 @@ class CreateCient extends Controller
     }
 
     public function createClient(){
-        $attributes = request()->validate([
-            'name' => 'required|min:4',
-            'celular' => 'required|max:11|unique:users,celular',
-            'password' => 'required|min:6|max:8',
-        ]);
 
-        $attributes['password'] = bcrypt($attributes['password']);
-        $attributes['created_at'] = date(now());
+        if(request()->input('client_without_password')) {
 
-        User::create($attributes);
+            $attributes = request()->validate([
+                'name' => 'required|min:4'
+            ]);
+
+            $attributes['celular'] = NULL;
+            $attributes['created_at'] = date(now());
+
+            User::create($attributes);
+
+        } else {
+
+            $attributes = request()->validate([
+                'name' => 'required|min:4',
+                'celular' => 'required|max:11|unique:users,celular',
+                'password' => 'required|min:6|max:8',
+            ]);
+
+            $attributes['password'] = bcrypt($attributes['password']);
+            $attributes['created_at'] = date(now());
+
+            User::create($attributes);
+
+        }
+
 
         return redirect('/autenticado')
                 ->with('logado', 'OK novo usuário cadastrado!');
@@ -51,7 +68,7 @@ class CreateCient extends Controller
         $currDate = date(now()->format('Y-m-d'));
 
         $date = Sales::where('sale_date', $currDate)
-                    ->where('user_fk', '')
+                    ->where('user_fk', 0)
                     ->pluck('sale_date');
 
         if(empty($date[0])) {
@@ -88,7 +105,7 @@ class CreateCient extends Controller
 
         }
 
-        return redirect('autenticado')
+        return redirect('/autenticado')
         ///////// redirecionar para check venda a vulsa por data (cria view para visualizar)
                 ->with('venda_a_vulsa', 'OK venda avulsa cadastrada!');
 

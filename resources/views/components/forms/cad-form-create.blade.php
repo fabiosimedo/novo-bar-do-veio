@@ -20,7 +20,7 @@
         <label for="celular" class="form-label mt-4">Celular</label>
         <input type="text" name="celular"
                class="form-control" placeholder="Cadastrar celular"
-               value="{{ old('celular') }}" required>
+               value="{{ old('celular') }}" id="celular" required>
 
         @error('celular')
             <p class="text-danger mt-2">{{ $message }}</p>
@@ -30,11 +30,17 @@
         <label for="senha" class="form-label mt-4">Senha</label>
         <input type="password" name="password"
                class="form-control"
-               placeholder="Cadastrar senha" required>
+               placeholder="Cadastrar senha" id="senha" required>
 
         @error('password')
             <p class="text-danger mt-2">A senha precisa ter entre 6 e 8 caractéres</p>
         @enderror
+
+        <div class="text-center">
+            <input type="checkbox" class="mt-4" name="client_without_password" id="check">
+            <span class="py-2 px-4">Cliente sem celular e senha.</span>
+
+        </div>
     </div>
 
     <button type="submit"
@@ -123,6 +129,20 @@
 <div class="text-center mt-4">
     <a onclick="history.back()" class="btn btn-primary-outline mt-4">Voltar</a>
 </div>
+
+
+<script>
+    const check = document.querySelector('#check')
+    const celular = document.querySelector('#celular')
+    const senha = document.querySelector('#senha')
+
+    check.addEventListener('change', e => {
+        console.log(e)
+        celular.required = false
+        senha.required = false
+    })
+
+</script>
 
 
 </x-header-and-nav>

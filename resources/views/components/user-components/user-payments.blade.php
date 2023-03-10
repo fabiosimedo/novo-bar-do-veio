@@ -54,6 +54,7 @@
             <div class="d-flex justify-content-between">
                 <button type="submit"
                         class="btn btn-success py-5"
+                        id="btn"
                         >Confirmar Pagamento</button>
 
             </div>
@@ -73,16 +74,16 @@
 
     const valor = document.querySelector('#valor')
     const form = document.querySelector('#pagar')
+    const btn = document.querySelector('#btn')
 
     form.addEventListener('submit', e => {
-        e.target.preventDefault()
+        e.preventDefault()
 
-        console.log(e)
-        // if(confirm(`O valor do pagamento está correto?\n Valor: R$${valor.value}`)) {
-        //     e.target.submit()
-        //     console.log(e)
-        // } else {
-        // }
+        if(confirm(`O valor do pagamento está correto?\n Valor: R$${valor.value}`))
+        {
+            btn.disabled = true
+            e.target.submit()
+        }
 
     })
 

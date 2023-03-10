@@ -24,6 +24,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [Home::class, 'index'])->name('login');
 Route::post('/entrar', [Home::class, 'userAccess']);
 
+// Route::get('/create', [CreateCient::class, 'createClientForm'])->name('create-client');
+// Route::post('/create', [CreateCient::class, 'createClient']);
+
 Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/create', [CreateCient::class, 'createClientForm'])

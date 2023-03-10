@@ -1,5 +1,5 @@
 @if (session()->has('logado'))
-    <div class="alert alert-warning sticky-top mt-2"
+    <div class="alert alert-warning sticky-top mt-2 example"
             role="alert" id="alertMessage">
             {{ session('logado') }}
     </div>
@@ -58,5 +58,12 @@
     <div class="alert alert-info mt-3"
          role="alert" id="alertMessage">
         {{ session('venda_a_vulsa') }}
+    </div>
+@endif
+
+@if (session()->has('deslogado'))
+    <div class="alert alert-info mt-3"
+         role="alert" id="alertMessage">
+        {{ session('deslogado') }}
     </div>
 @endif

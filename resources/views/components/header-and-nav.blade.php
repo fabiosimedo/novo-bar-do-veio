@@ -70,12 +70,26 @@
             const alerta = document.querySelector('#alertMessage')
 
             if(alerta !== null) {
+                // if (alerta.matches('.example')) {
+                //     clockStart()
+                // }
 
                 setTimeout(() => {
                     alerta.remove()
                 }, 4000);
 
             }
+
+            // function clockStart() {
+            //     setInterval(function() {
+            //                 date = new Date()
+            //                 let hour = date.getHours();
+            //                 let minutes = date.getMinutes();
+            //                 let seconds = date.getSeconds();
+            //                 document.getElementById("demo")
+            //                     .innerHTML = hour + ":"+ minutes + ":" + seconds;
+            //     }, 1000)
+            // }
 
         </script>
 

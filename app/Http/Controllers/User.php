@@ -163,7 +163,7 @@ class User extends Controller
         $route = 'user/' . $request->input('user_id');
 
         return redirect($route)
-                ->with('logado', 'OK nova venda cadastrada!');
+                ->with('venda_cadastrada', 'OK nova venda cadastrada!');
 
     }
 
@@ -240,6 +240,6 @@ class User extends Controller
     public function destroy(ModelsUser $user)
     {
         auth()->logout($user);
-        return redirect('/')->with('logado', 'Até logo...');
+        return redirect('/')->with('deslogado', 'Até logo...');
     }
 }

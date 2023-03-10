@@ -52,9 +52,9 @@
                     </p>
 
                 @else
-                    <p id="user-confirm">
-                        {{ auth()->user()->name }}
-                        registrando venda para
+                    <p id="user-confirm" class="mt-4">
+                        {{-- {{ auth()->user()->name }} --}}
+                        Esta quantidade está correta para
                        <p><span class="text-info h1">
                             {{ request()->input('user_name') }}?</span></p>
                     </p>
