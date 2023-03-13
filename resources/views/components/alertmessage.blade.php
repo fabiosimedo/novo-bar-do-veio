@@ -67,3 +67,17 @@
         {{ session('deslogado') }}
     </div>
 @endif
+
+@if (session()->has('payment-deleted'))
+    <div class="alert alert-warning mt-3"
+         role="alert" id="alertMessage">
+        {{ session('payment-deleted') }}
+    </div>
+@endif
+
+@if (session()->has('payment-for-single-purshase'))
+    <div class="alert alert-warning mt-3"
+         role="alert" id="alertMessage">
+        {{ session('payment-for-single-purshase') }}
+    </div>
+@endif

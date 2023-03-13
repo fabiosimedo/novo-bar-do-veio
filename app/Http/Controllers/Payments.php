@@ -53,6 +53,18 @@ class Payments extends Controller
 
     }
 
+    public static function showTotalFromDate($date, $user) {
+        $sum = SaledProducts::where('saled_date', $date)
+                        ->where('saled_client', $user)
+                        ->selectRaw('sum(saled_qtty * saled_price) as TotalPayments')
+                        ->pluck('TotalPayments');
+
+        return $sum[0];
+
+    }
+
+
+
     /**
      * Display a listing of the resource.
      *
@@ -126,6 +138,19 @@ class Payments extends Controller
         //
     }
 
+    public static function showSubTotalPayment($date, $user) {
+
+        $subtotal = SaledProducts::where('saled_date', $date)
+                            ->where('saled_client', $user)
+                            ->where('saled_paid', 0)
+                            ->selectRaw('sum(saled_qtty * saled_price) as TotalPayments')
+                            ->pluck('TotalPayments');
+
+        return $subtotal[0];
+
+    }
+
+
     /**
      * Update the specified resource in storage.
      *
@@ -133,18 +158,37 @@ class Payments extends Controller
      * @param  \App\Models\Payments  $payments
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Payments $payments)
+    public static function update(Request $request, Payments $payments)
     {
-        // return request()->input('datavenda');
-        $boolvalue = filter_var(request()->input('pago'), FILTER_VALIDATE_BOOLEAN);
-        return var_dump($boolvalue);
-        return request()->input('client');
 
-        /**
-         *
-         * se na table sale estiver true excluir os produtos relacionados
-         * com a data especificada e mandar para table pagos (ainda a ser criada)
-         */
+        $saleDate =  Sales::where('sale_date', request()->input('datavenda'))
+                    ->where('user_fk', request()->input('client'))
+                    ->get();
+
+        SaledProducts::where('saled_date', $saleDate[0]->sale_date)
+                        ->where('saled_client', request()->input('client'))
+                        ->update(['saled_paid' => 1]);
+
+        $saledProducts = SaledProducts::where('saled_date', $saleDate[0]->sale_date)
+                        ->where('saled_client', request()->input('client'))->get();
+
+        foreach($saledProducts as $saledList) {
+
+            if($saledList->saled_paid == 1) {
+                Sales::where('sale_date', request()->input('datavenda'))
+                        ->where('user_fk', request()->input('client'))
+                        ->update([ 'sale_paid' => 1 ]);
+            } else {
+                Sales::where('sale_date', request()->input('datavenda'))
+                        ->where('user_fk', request()->input('client'))
+                        ->update([ 'sale_paid' => 0 ]);
+            }
+
+        };
+
+        return back()
+                ->with('payment-for-single-purshase', 'Pagamento realizado para essa data');
+
     }
 
     /**
@@ -155,6 +199,8 @@ class Payments extends Controller
      */
     public function destroy(Payments $payments)
     {
-        //
+        ModelsPayments::where('payment_id', request()->input('payment_id'))->delete();
+
+        return back()->with('payment-deleted', 'Pagamento deletado da lista!');
     }
 }

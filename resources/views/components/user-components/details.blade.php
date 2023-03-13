@@ -1,4 +1,4 @@
-{{-- @dd($details[0]->saled_client) --}}
+
 <x-header-and-nav>
 
 @if (isset($details[0]))
@@ -22,29 +22,46 @@
             class="text-decoration-none text-uppercase">
             <li class="list-group-item d-flex justify-content-around">
 
-                <div class="text-start">
-                   <p>Total dessa data</p>
-                    <span class="btn btn-outline-danger px-3">
-                        R$<span class="h3" id="total"></span>,00
+                <div class="text-center">
+                    <span>
+                        <p>Total R$ {{ $sum }}</p>
+                    </span>
+
+                    <span>
+                        @if(isset($subtotal))
+
+                        <span class="text-danger" id="total">
+                            Restante {{ $subtotal }}
+                        </span>
+
+                        @endif
                     </span>
                 </div>
 
-                @if (auth()->user()->isadmin)
+                @if (auth()->user()->isadmin || auth()->user()->isfunc)
 
-                    <div>
-                        <form action="payallsale" method="post">
-                            @csrf
+                <div>
+                    <form action="/payallsale" method="post">
+                        @csrf
 
-                            <input type="hidden" name="datavenda"
-                                    value="{{ $details[0]->saled_date }}">
-                            <input type="hidden" name="client"
-                                    value="{{ $details[0]->saled_client }}">
-                            <input type="hidden" name="pago"
-                                    value="1">
+                        <input type="hidden" name="datavenda"
+                                value="{{ $details[0]->saled_date }}">
+                        <input type="hidden" name="client"
+                                value="{{ $details[0]->saled_client }}">
+                        <input type="hidden" name="pago"
+                                value="1">
 
-                            <button class="btn btn-outline-info p-3 mt-4">Pagar</button>
-                        </form>
-                    </div>
+                        <button class="btn btn-outline-info p-3 mt-4">
+
+                            @if(isset($subtotal))
+                                Pagar Restante
+                            @else
+                                Pagar Total
+                            @endif
+
+                        </button>
+                    </form>
+                </div>
 
                 @endif
 
@@ -52,43 +69,55 @@
         </a>
     </ul>
 
-    <ul class="list-group mt-3">
     @foreach ($details as $detail)
-        <li class="list-group-item bg-dark">
-            <p class="h6">Vendido por
-                <span class="text-info px-3">
-                    {{ $detail->saler }}
-                </span></p>
 
-        </li>
-        <li
-            class="list-group-item d-flex justify-content-around">
-            <span class="h4 col-6">{{ $detail->saled_name }}</span>
-            <span class="h4 col-2">{{ $detail->saled_qtty }}</span>
-            <span class="h4 col-3 text-white">
-                RS <span  id="single-sale">
-                    {{ $detail->saled_qtty * $detail->saled_price }}
-                </span>,00
-            </span>
-            @if (auth()->user()->isadmin || auth()->user()->isfunc)
-            <form method="post" action="/destroysale" class="col-1" id="deleteForm">
-                @csrf
+        <ul class="list-group mt-2">
+            <li class="list-group-item bg-dark">
 
-                <button class="btn btn-danger px-3">X</button>
-                <input type="hidden" name="saled_id"
-                       value="{{ $detail->saled_id }}">
-                <input type="hidden" name="user_id"
-                       value="{{ $detail->saled_client }}">
-            </form>
-            @endif
-        </li>
+                <p class="h6 d-flex justify-content-around">
+                    <span>Vendido por
+                        <span class="text-info px-3">{{ $detail->saler }}</span>
+                    </span>
+
+                    @if ($detail->saled_paid == 1)
+                        <span class="text-secondary">Pago para {{ auth()->user()->name }}</span>
+                    @else
+                        <span class="text-danger">Ainda não foi pago</span>
+                    @endif
+                </p>
+
+            </li>
+            <li
+                class="list-group-item d-flex justify-content-around">
+                <span class="h4 col-6">{{ $detail->saled_name }}</span>
+                <span class="h4 col-2">{{ $detail->saled_qtty }}</span>
+                <span class="h4 col-3 text-white">
+                    RS <span  id="single-sale">
+                        {{ $detail->saled_qtty * $detail->saled_price }}
+                    </span>,00
+                </span>
+                @if (auth()->user()->isadmin || auth()->user()->isfunc)
+                <form method="post" action="/destroysale" class="col-1" id="deleteForm">
+                    @csrf
+
+                    <button class="btn btn-danger px-3">X</button>
+                    <input type="hidden" name="saled_id"
+                        value="{{ $detail->saled_id }}">
+                    <input type="hidden" name="user_id"
+                        value="{{ $detail->saled_client }}">
+                </form>
+                @endif
+            </li>
+        </ul>
+
     @endforeach
-    </ul>
 
 @else
 
     <p class="h2 py-2 text-danger text-center">Sem registros de venda para esta data </p>
-    <p class="h4 text-center">{{ request()->input('date') }}</p>
+    <p class="h4 text-center">
+            {{ \Carbon\Carbon::parse(request()->input('date'))
+                                ->format('d M Y - D') }}</p>
 
     <form action="/destoydate" method="post" class="text-center mt-3">
         @csrf
@@ -105,17 +134,6 @@
 @endif
 
     <script>
-
-        const span = document.querySelectorAll('#single-sale')
-        const spanTotal = document.querySelector('#total')
-        const soma = []
-
-        span.forEach(el => {
-            soma.push(parseFloat(el.innerText))
-        })
-
-        const total = soma.reduce((total, currentElement) => total + currentElement)
-        spanTotal.innerText = total
 
         document.querySelectorAll('#deleteForm').forEach(e => {
             e.addEventListener('submit', e => {

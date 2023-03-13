@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Payments;
+use App\Models\Payments as ModelsPayments;
 use App\Models\Product;
 use App\Models\User as ModelsUser;
 use App\Models\SaledProducts;
 use App\Models\Sales;
+use Faker\Provider\ar_EG\Payment;
 use Illuminate\Http\Request;
 
 class User extends Controller
@@ -169,16 +171,16 @@ class User extends Controller
 
     public function purshaseDetail(Request $request) {
 
-        $saledate = request()->input('date');
-
-        $user = request()->input('user');
-
-        $details = SaledProducts::where('saled_date', $saledate)
-                            ->where('saled_client', $user)
-                            ->get();
+        $details = SaledProducts::where('saled_date', $request->input('date'))
+                            ->where('saled_client', $request->input('user'))
+                            ->orderBy('saled_id', 'DESC')->get();
 
         return view('components.user-components.details', [
             'details' => $details,
+            'sum' =>
+            Payments::showTotalFromDate($request->input('date'), $request->input('user')),
+            'subtotal' =>
+            Payments::showSubTotalPayment($request->input('date'), $request->input('user'))
         ]);
     }
 
@@ -210,12 +212,10 @@ class User extends Controller
 
     public function destroysale() {
 
-       $redirect = 'user/'. request()->input('user_id');
-
         SaledProducts::where('saled_id', request()->input('saled_id'))
         ->delete();
 
-        return redirect($redirect)->with('deletado', 'Venda deletada!');
+        return back()->with('deletado', 'Venda deletada!');
 
     }
 

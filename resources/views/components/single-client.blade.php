@@ -49,7 +49,7 @@
 
             </div>
 
-            @if (auth()->user()->isadmin)
+            @if (auth()->user()->isadmin || auth()->user()->isfunc)
             <div>
 
                 <form action="/updatepassword" method="get">

@@ -18,6 +18,7 @@ class CreateSalesTable extends Migration
             $table->integer('user_fk');
             $table->integer('saled_products_fk');
             $table->date('sale_date');
+            $table->boolean('sale_paid')->default(false);
         });
     }
 

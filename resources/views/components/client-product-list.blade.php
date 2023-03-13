@@ -36,7 +36,7 @@
         @if ($user->user_id === $sale->user_fk)
         <ul class="list-group mt-2">
 
-            <form action="/data" method="post">
+            <form action="/data" method="get">
                 @csrf
 
                 <input type="hidden" name="user" value="{{ $user->user_id }}">
@@ -73,16 +73,28 @@
         <ul class="list-group">
         @foreach ($payments as $payment)
 
-            <li class="list-group-item text-secondary  p-3">
-                {{ \Carbon\Carbon::parse($payment->payment_date)
-                                    ->format('d M Y D') }}
+            <li class="list-group-item text-secondary p-3 d-flex justify-content-around">
+                <div>
+
+                    {{ \Carbon\Carbon::parse($payment->payment_date)
+                                    ->format('d/m/y') }}
+                    <span>{{ substr($payment->payment_receiver, 0, 6) }}</span>
                     <span class="badge badge-pill badge-secondary mt-2">
                         R$ {{ $payment->payment_value }}
                     </span>
 
-                {{-- <p>
-                    <span class="badge badge-pill badge-secondary">
-                            {{ $payment->payment_receiver }}</span></p> --}}
+                </div>
+
+                @if (auth()->user()->isadmin)
+                <form action="/destroypayment" method="post">
+                    @csrf
+
+                    <input type="hidden" name="payment_id"
+                            value="{{ $payment->payment_id }}">
+
+                    <input class="btn btn-danger" type="submit" value="X">
+                </form>
+                @endif
             </li>
 
         @endforeach

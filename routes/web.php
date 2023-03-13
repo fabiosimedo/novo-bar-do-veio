@@ -51,13 +51,15 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/user/{id}', [User::class, 'show'])
         ->name('single-client');
     Route::get('/insertproducts/{user:id}', [User::class, 'create'])
-            ->name('insertproducts');
+        ->name('insertproducts');
     Route::post('/insertproducts/{user:user_id}', [User::class, 'edit'])
         ->name('insertproducts-post');
     Route::post('/finish-sale', [User::class, 'store'])
         ->name('finish-sale');
-    Route::post('/data', [User::class, 'purshaseDetail'])
+
+    Route::get('/data', [User::class, 'purshaseDetail'])
         ->name('purshase-detail');
+
     Route::post('/destroysale', [User::class, 'destroysale']);
     Route::post('/destoydate', [User::class, 'destoydate']);
 
@@ -70,6 +72,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/pagamentos/{id}', [Payments::class, 'index']);
     Route::post('/pagamentos', [Payments::class, 'create']);
     Route::post('/payallsale', [Payments::class, 'update']);
+    Route::post('/destroypayment', [Payments::class, 'destroy']);
 
     ///// managing products
     Route::get('/addproduct', [ProductInsert::class, 'index'])
