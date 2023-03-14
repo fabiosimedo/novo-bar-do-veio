@@ -151,6 +151,28 @@ class Payments extends Controller
     }
 
 
+    public static function paymentReceiver($date, $user) {
+        $paid = SaledProducts::where('saled_date', $date)
+                        ->where('saled_client', $user)
+                        ->where('saled_paid', 0)
+                        ->get();
+
+                        return $paid;
+
+        $allpaids = [];
+
+        foreach($paid as $teste) {
+            array_push($allpaids, $teste->saled_paid);
+
+        }
+
+        // foreach($allpaids as $notpaid)
+            // var_dump($notpaid);
+
+    }
+
+
+
     /**
      * Update the specified resource in storage.
      *
@@ -158,33 +180,36 @@ class Payments extends Controller
      * @param  \App\Models\Payments  $payments
      * @return \Illuminate\Http\Response
      */
-    public static function update(Request $request, Payments $payments)
+    public static function update()
     {
 
-        $saleDate =  Sales::where('sale_date', request()->input('datavenda'))
+        $saleDate = Sales::where('sale_date', request()->input('datavenda'))
                     ->where('user_fk', request()->input('client'))
                     ->get();
 
-        SaledProducts::where('saled_date', $saleDate[0]->sale_date)
-                        ->where('saled_client', request()->input('client'))
-                        ->update(['saled_paid' => 1]);
+        $notpaid = SaledProducts::where('saled_date', $saleDate[0]->sale_date)
+                    ->where('saled_client', request()->input('client'))
+                    ->where('saled_paid', 0)
+                    ->get();
 
-        $saledProducts = SaledProducts::where('saled_date', $saleDate[0]->sale_date)
-                        ->where('saled_client', request()->input('client'))->get();
+        foreach($notpaid as $paiyng) {
 
-        foreach($saledProducts as $saledList) {
+            Sales::where('sale_date', request()->input('datavenda'))
+                    ->where('user_fk', request()->input('client'))
+                    ->update([ 'sale_paid' => 1 ]);
 
-            if($saledList->saled_paid == 1) {
-                Sales::where('sale_date', request()->input('datavenda'))
-                        ->where('user_fk', request()->input('client'))
-                        ->update([ 'sale_paid' => 1 ]);
-            } else {
-                Sales::where('sale_date', request()->input('datavenda'))
-                        ->where('user_fk', request()->input('client'))
-                        ->update([ 'sale_paid' => 0 ]);
-            }
+            SaledProducts::where('saled_date', $saleDate[0]->sale_date)
+                            ->where('saled_client', request()->input('client'))
+                            ->where('saled_receiver', '')
+                            ->where('saled_paid', 0)
+                            ->update(['saled_receiver' => auth()->user()->name]);
 
-        };
+            SaledProducts::where('saled_date', $saleDate[0]->sale_date)
+                            ->where('saled_client', request()->input('client'))
+                            ->where('saled_paid', 0)
+                            ->update(['saled_paid' => 1]);
+
+        }
 
         return back()
                 ->with('payment-for-single-purshase', 'Pagamento realizado para essa data');
@@ -199,6 +224,38 @@ class Payments extends Controller
      */
     public function destroy(Payments $payments)
     {
+
+
+        ####### tabela de excluir produtos
+        ############### atualizar tabela de datas de acordo com as vendas
+        ######## sem vendas pra receber ok com vendas pra receber débito
+
+        // $saleDate = Sales::where('sale_date', request()->input('datavenda'))
+        //             ->where('user_fk', request()->input('client'))
+        //             ->get();
+
+        // $notpaid = SaledProducts::where('saled_date', $saleDate[0]->sale_date)
+        //             ->where('saled_client', request()->input('client'))
+        //             ->where('saled_paid', 0)
+        //             ->get();
+
+        // $paid = SaledProducts::where('saled_date', $saleDate[0]->sale_date)
+        //             ->where('saled_client', request()->input('client'))
+        //             ->where('saled_paid', 1)
+        //             ->get();
+
+        // if($notpaid) {
+        //     Sales::where('sale_date', request()->input('datavenda'))
+        //             ->where('user_fk', request()->input('client'))
+        //             ->update([ 'sale_paid' => 0 ]);
+        // }
+
+        // elseif($paid) {
+        //     Sales::where('sale_date', request()->input('datavenda'))
+        //             ->where('user_fk', request()->input('client'))
+        //             ->update([ 'sale_paid' => 1 ]);
+        // }
+
         ModelsPayments::where('payment_id', request()->input('payment_id'))->delete();
 
         return back()->with('payment-deleted', 'Pagamento deletado da lista!');

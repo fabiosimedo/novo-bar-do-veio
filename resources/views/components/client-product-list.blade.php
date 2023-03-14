@@ -31,8 +31,8 @@
 
     <div class="col-5">
     <p class="h3 text-center">Compras</p>
-    @foreach ($sales as $sale)
 
+    @foreach ($sales as $sale)
         @if ($user->user_id === $sale->user_fk)
         <ul class="list-group mt-2">
 
@@ -52,8 +52,16 @@
 
                         <span>
                             {{ \Carbon\Carbon::parse($sale->sale_date)
-                                            ->format('d M Y') }}
+                                            ->format('d/m/Y') }}
                         </span>
+
+                        @if ($sale->sale_paid === 1)
+                            <span class="badge text-success">ok</span>
+                        @endif
+
+                        @if ($sale->sale_paid === 0)
+                            <span class="badge text-danger">DÉBITOS</span>
+                        @endif
 
                     </li>
 

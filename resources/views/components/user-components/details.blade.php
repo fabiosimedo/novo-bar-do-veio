@@ -1,7 +1,8 @@
-
 <x-header-and-nav>
 
 @if (isset($details[0]))
+
+    {{-- <p class="h2 text-center" disabled>{{  }}</p> --}}
 
     <div class="d-flex justify-content-around">
 
@@ -18,7 +19,7 @@
     </div>
 
     <ul class="list-group mt-3 mb-3">
-        <a href="/user/{{ $details[0]->saled_client }}"
+        <a href="#"
             class="text-decoration-none text-uppercase">
             <li class="list-group-item d-flex justify-content-around">
 
@@ -42,6 +43,7 @@
 
                 <div>
                     <form action="/payallsale" method="post">
+
                         @csrf
 
                         <input type="hidden" name="datavenda"
@@ -51,13 +53,14 @@
                         <input type="hidden" name="pago"
                                 value="1">
 
+                        @if(isset($subtotal))
                         <button class="btn btn-outline-info p-3 mt-4">
+                            Pagar Restante
+                        @elseif ($subtotal == null)
+                        <button class="btn btn-outline-info p-3 mt-4" disabled>
+                            Sem débitos!
 
-                            @if(isset($subtotal))
-                                Pagar Restante
-                            @else
-                                Pagar Total
-                            @endif
+                        @endif
 
                         </button>
                     </form>
@@ -76,11 +79,13 @@
 
                 <p class="h6 d-flex justify-content-around">
                     <span>Vendido por
-                        <span class="text-info px-3">{{ $detail->saler }}</span>
+                        <span class="text-info px-3">{{ substr($detail->saler, 0, 6) }}</span>
                     </span>
 
                     @if ($detail->saled_paid == 1)
-                        <span class="text-secondary">Pago para {{ auth()->user()->name }}</span>
+                        <span class="text-secondary">Pago para
+                            {{ substr($detail->saled_receiver, 0, 6) }}
+                        </span>
                     @else
                         <span class="text-danger">Ainda não foi pago</span>
                     @endif

@@ -71,6 +71,7 @@ class User extends Controller
 
         $user = ModelsUser::where('user_id', $id)->get();
 
+        // return Payments::show($id);
         return view('components.single-client', [
             'user' => $user[0],
             'sales' =>  Payments::show($id),
@@ -122,44 +123,33 @@ class User extends Controller
                 'sale_date' => date(now())
             ];
 
-            if(isset($date[0]) === $currDate) {
-                $attributes['sale_date'] =
-                    Sales::where('sale_date', $currDate)
-                         ->where('user_fk', $request->input('user_id'))
-                         ->update(['sale_date' => $currDate]);
-            }
-
             Sales::create($attributes);
+        }
 
-            foreach(request()->input('products') as $key => $value) {
+        if(isset($date[0])) {
 
-                $teste =  Product::where('product_name', $key)->pluck('product_price');
+            Sales::where('sale_date', $currDate)
+                    ->where('user_fk', $request->input('user_id'))
+                    ->update(['sale_date' => $currDate]);
 
-                SaledProducts::create([
-                    'saled_name' =>  $key,
-                    'saled_qtty' => $value,
-                    'saled_price' => $teste[0],
-                    'saled_client' => $request->input('user_id'),
-                    'saler' => auth()->user()->name,
-                    'saled_date' => date(now())
-                ]);
-            }
+            Sales::where('sale_date', $currDate)
+                    ->where('user_fk', $request->input('user_id'))
+                    ->update(['sale_paid' => false ]);
 
-        } else {
+        }
 
-            foreach(request()->input('products') as $key => $value) {
+        foreach(request()->input('products') as $key => $value) {
 
-                $teste =  Product::where('product_name', $key)->pluck('product_price');
+            $teste =  Product::where('product_name', $key)->pluck('product_price');
 
-                SaledProducts::create([
-                    'saled_name' =>  $key,
-                    'saled_qtty' => $value,
-                    'saled_price' => $teste[0],
-                    'saled_client' => $request->input('user_id'),
-                    'saler' => auth()->user()->name,
-                    'saled_date' => date(now())
-                ]);
-            }
+            SaledProducts::create([
+                'saled_name' =>  $key,
+                'saled_qtty' => $value,
+                'saled_price' => $teste[0],
+                'saled_client' => $request->input('user_id'),
+                'saler' => auth()->user()->name,
+                'saled_date' => date(now())
+            ]);
         }
 
         $route = 'user/' . $request->input('user_id');
@@ -171,6 +161,8 @@ class User extends Controller
 
     public function purshaseDetail(Request $request) {
 
+        // return Payments::paymentReceiver($request->input('date'), $request->input('user'));
+
         $details = SaledProducts::where('saled_date', $request->input('date'))
                             ->where('saled_client', $request->input('user'))
                             ->orderBy('saled_id', 'DESC')->get();
@@ -180,7 +172,9 @@ class User extends Controller
             'sum' =>
             Payments::showTotalFromDate($request->input('date'), $request->input('user')),
             'subtotal' =>
-            Payments::showSubTotalPayment($request->input('date'), $request->input('user'))
+            Payments::showSubTotalPayment($request->input('date'), $request->input('user')),
+            'paymentreceiver' =>
+            Payments::paymentReceiver($request->input('date'), $request->input('user'))
         ]);
     }
 

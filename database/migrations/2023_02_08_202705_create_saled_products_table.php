@@ -22,6 +22,7 @@ class CreateSaledProductsTable extends Migration
             $table->string('saler');
             $table->date('saled_date');
             $table->boolean('saled_paid')->default(false);
+            $table->string('saled_receiver');
         });
     }
 
