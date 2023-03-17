@@ -19,6 +19,7 @@ class CreatePaymentsTable extends Migration
             $table->string('payment_receiver');
             $table->decimal('payment_value', 8, 2);
             $table->decimal('payment_remainder', 8, 2);
+            $table->decimal('payment_global', 8, 2);
             $table->date('payment_date');
         });
     }

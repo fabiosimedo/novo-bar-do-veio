@@ -17,6 +17,7 @@
             :sales="$sales" :user="$user"
             :products="$products" :sum="$sum"
             :payments="$payments"
+            :totalsum="$totalsum"
             />
 
 </x-header-and-nav>

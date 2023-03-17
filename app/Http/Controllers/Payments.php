@@ -14,22 +14,19 @@ use Illuminate\Support\Facades\DB;
 class Payments extends Controller
 {
 
-    public static function createGlobalPayment($user_id) {
+    public static function updateSalesPayment($currDate, $user_id) {
 
-        $notpaid = SaledProducts::where('saled_client', $user_id)
-                            ->selectRaw('sum(saled_qtty * saled_price) as Total')
-                            ->pluck('Total');
-
-        $arrayFromClient = [
-            'payment_client' => $user_id,
-            'payment_receiver' => '',
-            'payment_value' => 0,
-            'payment_remainder' => $notpaid[0],
-            'payment_date' => date(now())
+        $updateDateAndPaymentStatus = [
+            'sale_paid' => 0,
+            'sale_total_value' =>
+            Payments::showTotalFromDate($currDate, $user_id),
+            'sale_not_paid_value' =>
+            Payments::showSubTotalPayment($currDate, $user_id)
         ];
 
-        ModelsPayments::create($arrayFromClient);
-
+        Sales::where('sale_date', $currDate)
+                ->where('user_fk', $user_id)
+                ->update($updateDateAndPaymentStatus);
     }
 
 
@@ -50,6 +47,7 @@ class Payments extends Controller
                 'payment_receiver' => '',
                 'payment_value' => 0,
                 'payment_remainder' => $notpaid[0],
+                'payment_global' => 0,
                 'payment_date' => date(now())
             ];
 
@@ -69,8 +67,7 @@ class Payments extends Controller
 
             $updatePayment = [
                 'payment_value' => $paid[0] ?? 0,
-                'payment_remainder' => $notpaid[0],
-                'payment_date' => $currDate
+                'payment_remainder' => $notpaid[0]
             ];
 
             ModelsPayments::where('payment_client', $user_id)
@@ -140,32 +137,68 @@ class Payments extends Controller
     public function create()
     {
         $user = request()->input('payment_client');
-
+        $receiver = request()->input('payment_receiver');
+        $paidvalue = request()->input('payment_value');
         $currDate = date(now()->format('Y-m-d'));
 
-        $savedPayments = ModelsPayments::where('payment_client', $user)
-                            ->where('payment_date', $currDate)->get();
+        $paymentexists =  ModelsPayments::where('payment_client', $user)
+                                ->where('payment_date', $currDate)->get();
 
-        $clientpayment = [
-            'payment_value' =>
-            $savedPayments[0]->payment_value + request()->input('payment_value')
-        ];
+        $savedPaymmentValue = $paymentexists[0]->payment_value;
+        $savedPaymentGlobal = $paymentexists[0]->payment_global;
 
-        ModelsPayments::where('payment_client', $user)
-                            ->where('payment_date', $currDate)
-                            ->update($clientpayment);
+        if(empty($paymentexists[0])) {
 
-        Sales::where('sale_date', $currDate)
-                        ->where('user_fk', $user)
-                        ->update([
-                            'sale_total_value' =>
-                            $this->showTotalFromDate($currDate, $user),
-                            'sale_not_paid_value' =>
-                            $this->showSubTotalPayment($currDate, $user)
-                        ]);
+            ModelsPayments::create([
+                'payment_client' => $user,
+                'payment_receiver' => $receiver,
+                'payment_value' => $paidvalue,
+                 'payment_remainder' => 0,
+                 'payment_global' => $paidvalue,
+                 'payment_date' => date(now())
+            ]);
+
+            /// classe que vai retirar valores devidos de sales e saledproducts
+        }
+
+        if(isset($paymentexists[0])) {
+
+            ModelsPayments::where('payment_client', $user)
+                                ->where('payment_date', $currDate)
+                                ->update([
+                                    'payment_receiver' => $receiver,
+                                    'payment_value' => $paidvalue + $savedPaymmentValue,
+                                    'payment_global' => $paidvalue + $savedPaymentGlobal
+                                ]);
+
+
+            /// classe que vai retirar valores devidos de sales e saledproducts
+        }
 
         return redirect('user/' . $user)
                 ->with('pagamento', 'Pagamento realizado com successo!');
+
+
+
+        // $paymentexists =  ModelsPayments::where('payment_client', $user)
+        //                         ->where('payment_date', $currDate)->pluck('payment_global');
+        //                         // ->sum('payment_global');
+
+        // $saleNotPaid = Sales::where('user_fk', $user)->where('sale_paid', 0)
+        //                         ->sum('sale_not_paid_value');
+
+        //                 // return $saleNotPaid;
+
+        // $saledNotPaid =  SaledProducts::where('saled_date', $currDate)
+        //                 ->where('saled_client', $user)
+        //                 ->where('saled_paid', 0)
+        //                 ->selectRaw('sum(saled_qtty * saled_price) as NotPaidDate')
+        //                 ->pluck('NotPaidDate');
+
+        //                 return $saledNotPaid[0];
+
+
+
     }
 
     /**

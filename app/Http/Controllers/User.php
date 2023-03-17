@@ -47,7 +47,8 @@ class User extends Controller
                 'sum' =>
                     Payments::showTotalClientDebit($userDetail[0]->user_id),
                 'payments' =>
-                    Payments::showPayments($userDetail[0]->user_id)
+                    Payments::showPayments($userDetail[0]->user_id),
+                'totalsum' => Payments::showTotalClientDebit($userDetail[0]->user_id),
             ]);
 
         }
@@ -199,18 +200,7 @@ class User extends Controller
 
             Payments::updateGlobalPayment($user_id);
 
-            $updateDateAndPaymentStatus = [
-                'sale_date' => $currDate,
-                'sale_paid' => 0,
-                'sale_total_value' =>
-                Payments::showTotalFromDate($currDate, $user_id),
-                'sale_paid_value' =>
-                Payments::showSubTotalPayment($currDate, $user_id)
-            ];
-
-            Sales::where('sale_date', $currDate)
-                    ->where('user_fk', $user_id)
-                    ->update($updateDateAndPaymentStatus);
+            Payments::updateSalesPayment($currDate, $user_id);
 
         }
 
@@ -236,10 +226,15 @@ class User extends Controller
         ]);
     }
 
-    public function destroysale() {
+    public function destroysale()
+    {
 
         SaledProducts::where('saled_id', request()->input('saled_id'))
         ->delete();
+
+        Payments::updateGlobalPayment(request()->input('user_id'));
+
+        Payments::updateSalesPayment(request()->input('saled_date'), request()->input('user_id'));
 
         return back()->with('deletado', 'Venda deletada!');
     }

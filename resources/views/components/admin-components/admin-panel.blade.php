@@ -20,7 +20,7 @@
 
     <div>
 
-        @if (auth()->user()->isadmin)
+        @if (auth()->user()->isfunc || auth()->user()->isadmin)
         <div class="d-flex justify-content-between py-3">
 
             <a href="/create"
@@ -31,9 +31,6 @@
                class="btn btn-primary-outline py-2 px-3 mt-2">Estoque</a>
 
         </div>
-        @endif
-
-        @if (auth()->user()->isfunc || auth()->user()->isadmin)
         <div>
 
             <a href="/create/avulso"
