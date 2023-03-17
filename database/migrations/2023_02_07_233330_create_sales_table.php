@@ -19,6 +19,8 @@ class CreateSalesTable extends Migration
             $table->integer('saled_products_fk');
             $table->date('sale_date');
             $table->boolean('sale_paid')->default(false);
+            $table->decimal('sale_total_value', 6, 2);
+            $table->decimal('sale_not_paid_value', 6, 2);
         });
     }
 

@@ -39,13 +39,13 @@
 
             <div>
                 <a href="/insertproducts/{{ $user->user_id }}"
-                class="btn btn-danger py-3">Nova Venda</a>
+                   class="btn btn-danger py-3">Nova Venda</a>
             </div>
 
             <div>
 
                 <a href="/pagamentos/{{ $user->user_id }}"
-                        class="btn btn-success py-3">Pagamentos</a>
+                   class="btn btn-success py-3">Pagamentos</a>
 
             </div>
 
@@ -60,7 +60,7 @@
                            value="{{ $user->user_id }}">
 
                     <input type="submit"
-                            class="btn btn-info py-3" value="Edita Senha" />
+                           class="btn btn-info py-3" value="Edita Senha" />
                 </form>
 
             </div>
@@ -75,8 +75,8 @@
             :user="$user"
             :sales="$sales"
             :products="$products"
-            :sum="$sum"
             :payments="$payments"
+            :totalsum="$totalsum"
              />
     </div>
 

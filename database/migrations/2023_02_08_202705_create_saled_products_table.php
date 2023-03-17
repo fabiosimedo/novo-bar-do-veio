@@ -17,7 +17,7 @@ class CreateSaledProductsTable extends Migration
             $table->id('saled_id');
             $table->string('saled_name');
             $table->integer('saled_qtty');
-            $table->decimal('saled_price');
+            $table->decimal('saled_price', 6, 2);
             $table->integer('saled_client');
             $table->string('saler');
             $table->date('saled_date');

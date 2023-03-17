@@ -2,13 +2,14 @@
 
 @if (isset($details[0]))
 
-    {{-- <p class="h2 text-center" disabled>{{  }}</p> --}}
-
     <div class="d-flex justify-content-around">
 
-        <div class="h2 py-3">
-            {{ \Carbon\Carbon::parse($details[0]->saled_date)
-                ->format('d M Y - D') }}
+        <div class="py-2">
+            <span class="h4">{{ $user->name }}</span>
+            <p class="text-center">
+                {{ \Carbon\Carbon::parse($details[0]->saled_date)
+                    ->format('d/m/Y') }}
+            </p>
 
         </div>
         <div class="text-end">
@@ -110,6 +111,10 @@
                         value="{{ $detail->saled_id }}">
                     <input type="hidden" name="user_id"
                         value="{{ $detail->saled_client }}">
+                    <input type="hidden" name="price"
+                        value="{{ $detail->saled_qtty * $detail->saled_price }}">
+                    <input type="hidden" name="saled_date"
+                        value="{{ $detail->saled_date }}">
                 </form>
                 @endif
             </li>

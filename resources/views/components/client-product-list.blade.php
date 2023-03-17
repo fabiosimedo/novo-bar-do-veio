@@ -5,25 +5,29 @@
 @endif
 
 <div
-    class="alert alert-dark mt-3 d-flex justify-content-end text-danger" role="alert">
+    class="alert alert-dark mt-3 d-flex justify-content-end" role="alert">
 
-    @if ($sum < 0)
+    @if ($totalsum[0] < 0.0)
 
-        <span class="text-white px-3">SALDO POSITIVO</span>
-        <span class="text-success" id="total">
+        <span class="text-success px-3">SALDO POSITIVO</span>
+        <span class="text-white">R$</span>
+        <span class="badge text-success" id="total">
+            {{ $totalsum[0] }}
+        </span>
 
-    @elseif ($sum > 0)
+    @elseif ($totalsum[0] > 0.0)
 
         <span class="text-white px-3">SALDO DEVEDOR</span>
-        <span class="text-danger" id="total">
+        <span class="text-white">R$</span>
+        <span class="badge text-danger" id="total">
+            {{ $totalsum[0] }}
+        </span>
 
-    @elseif ($sum == 0)
+    @elseif ($totalsum[0] == 0.0)
 
-        <span class="text-white">Você não tem débitos registrados!
+        <span class="text-white">Você não tem débitos registrados!</span>
 
     @endif
-        R$ {{ $sum }}
-    </span>
 
 </div>
 
@@ -55,11 +59,11 @@
                                             ->format('d/m/Y') }}
                         </span>
 
-                        @if ($sale->sale_paid === 1)
+                        @if ($sale->sale_paid == 1)
                             <span class="badge text-success">ok</span>
                         @endif
 
-                        @if ($sale->sale_paid === 0)
+                        @if ($sale->sale_paid == 0)
                             <span class="badge text-danger">DÉBITOS</span>
                         @endif
 
@@ -78,10 +82,11 @@
 
     <div class="col-5">
         <p class="h3 text-center">Pagamentos</p>
-        <ul class="list-group">
         @foreach ($payments as $payment)
+        @if ($payment->payment_value > 0.0)
+        <ul class="list-group">
 
-            <li class="list-group-item text-secondary p-3 d-flex justify-content-around">
+            <li class="list-group-item text-secondary d-flex justify-content-around">
                 <div>
 
                     {{ \Carbon\Carbon::parse($payment->payment_date)
@@ -105,8 +110,17 @@
                 @endif
             </li>
 
-        @endforeach
         </ul>
+        @else
+
+            <ul class="list-group mt-2">
+                <li class="list-group-item text-secondary p-3 d-flex justify-content-around">
+                    SEM PAGAMENTOS
+                </li>
+            </ul>
+
+        @endif
+        @endforeach
     </div>
 
 </div>
