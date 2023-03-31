@@ -71,6 +71,9 @@ Route::group(['middleware' => ['auth']], function () {
     ##### rotas de pagamentos
     Route::get('/pagamentos/{id}', [Payments::class, 'index']);
     Route::post('/pagamentos', [Payments::class, 'create']);
+
+    Route::post('/pagamentos', [Payments::class, 'updatePaymentsFromDay']);
+
     Route::post('/payallsale', [Payments::class, 'update']);
     Route::post('/destroypayment', [Payments::class, 'destroy']);
 

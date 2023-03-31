@@ -26,16 +26,19 @@
 
                 <div class="text-center">
                     <span>
-                        <p>Total R$ {{ $sum }}</p>
+                        <p>Total R$ {{ substr_replace($sum, ',', -3, -2) }}</p>
+
                     </span>
 
                     <span>
-                        @if(isset($subtotal))
+                        @if($subtotal <= 0)
 
-                        <span class="text-danger" id="total">
-                            Restante {{ $subtotal }}
+                        <span class="text-white" id="total">
+                            Tudo pago aqui!
                         </span>
-
+                        @else
+                            <span class="text-danger" id="total">
+                                R$ {{ substr_replace($subtotal, ',', -3, -2) }}
                         @endif
                     </span>
                 </div>
@@ -54,12 +57,12 @@
                         <input type="hidden" name="pago"
                                 value="1">
 
-                        @if(isset($subtotal))
+                        @if($subtotal > 0)
                         <button class="btn btn-outline-info p-3 mt-4">
                             Pagar Restante
-                        @elseif ($subtotal == null)
-                        <button class="btn btn-outline-info p-3 mt-4" disabled>
-                            Sem débitos!
+                        @elseif ($subtotal <= 0)
+                        {{-- <button class="btn btn-outline-info p-3 mt-4" disabled>
+                            Tudo Pago! --}}
 
                         @endif
 
@@ -80,7 +83,7 @@
 
                 <p class="h6 d-flex justify-content-around">
                     <span>Vendido por
-                        <span class="text-info px-3">{{ substr($detail->saler, 0, 6) }}</span>
+                        <span class="text-info px-3">{{ substr($detail->saled_saler, 0, 6) }}</span>
                     </span>
 
                     @if ($detail->saled_paid == 1)
@@ -99,8 +102,8 @@
                 <span class="h4 col-2">{{ $detail->saled_qtty }}</span>
                 <span class="h4 col-3 text-white">
                     RS <span  id="single-sale">
-                        {{ $detail->saled_qtty * $detail->saled_price }}
-                    </span>,00
+                        {{ substr_replace($detail->saled_total, ',', -3, -2) }}
+                    </span>
                 </span>
                 @if (auth()->user()->isadmin || auth()->user()->isfunc)
                 <form method="post" action="/destroysale" class="col-1" id="deleteForm">

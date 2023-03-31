@@ -5,42 +5,51 @@
 @endif
 
 <div
-    class="alert alert-dark mt-3 d-flex justify-content-around" role="alert">
+    {{-- class="alert alert-dark mt-3 d-flex justify-content-around" role="alert"> --}}
+    class="alert alert-dark mt-3 d-flex justify-content-end" role="alert">
 
-    <select id="pagamentos"
-            class="form-select form-select w-50">
+    {{-- <select id="pagamentos"
+            class="form-select form-select w-25">
         @foreach ($payments as $payment)
             <option active>Pagamentos</option>
             <option value="pagamentos">
-                R$ {{ $payment->payment_global }}
-                - {{ $payment->payment_receiver }}
-                - Data: {{ $payment->payment_date }}
+                @if ($payment->payment_global > 0)
+                    R$ {{ $payment->payment_global }}
+                    - {{ $payment->payment_receiver }}
+                    - Data: {{ $payment->payment_date }}
+
+                @endif
 
             </option>
 
         @endforeach
-    </select>
+    </select> --}}
 
     <div>
-    @if ($totalsum[0] < 0.0)
+    @if ($totalsum < 0)
 
         <span class="text-success px-3">SALDO POSITIVO</span>
-        <span class="text-white">R$</span>
-        <span class="badge text-success" id="total">
-            {{ $totalsum[0] }}
-        </span>
+        <p class="text-center">
+            <span class="text-white">R$</span>
+            <span class="badge text-success" id="total">
+                {{ $totalsum }}
+            </span>
 
-    @elseif ($totalsum[0] > 0.0)
+        </p>
+
+    @elseif ($totalsum > 0)
 
         <span class="text-white px-3">SALDO DEVEDOR</span>
-        <span class="text-white">R$</span>
-        <span class="badge text-danger" id="total">
-            {{ $totalsum[0] }}
-        </span>
+        <p class="text-center">
+            <span class="text-white">R$</span>
+            <span class="badge text-danger" id="total">
+                {{ $totalsum }}
+            </span>
+
+        </p>
 
     @else
-    {{-- if ($totalsum[0] == 0.0) --}}
-        <span class="text-white">Você não tem débitos registrados!</span>
+        <span class="text-white">Sem Débitos!</span>
 
     @endif
     </div>
@@ -66,26 +75,25 @@
                 <button class="btn btn-outline-dark w-100 py-3 mt-2">
 
                     <li
-                    class="d-flex justify-content-around text-secondary">
+                        class="d-flex justify-content-around text-secondary">
 
                         <span>
                             {{ \Carbon\Carbon::parse($sale->sale_date)
                                             ->format('d/m/Y') }}
                         </span>
 
-                        @if ($sale->sale_paid == 1)
+                        {{-- @if ($sale->sale_paid == 1)
                         <div>
-                            DIA
                             <span class="badge text-success">ok</span>
                         </div>
-                        @endif
+                        @endif --}}
 
-                        @if ($sale->sale_paid == 0)
+                        {{-- @if ($sale->sale_paid == 0)
                         <div>
                             <span class="badge text-danger">DÉBITOS</span>
                             <span>R$ {{ $sale->sale_not_paid_value }}</span>
                         </div>
-                        @endif
+                        @endif --}}
 
                     </li>
 

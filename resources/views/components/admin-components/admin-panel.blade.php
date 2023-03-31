@@ -27,8 +27,11 @@
                 class="btn btn-primary-outline py-2 px-3 mt-2">Usuário</a>
             <a href="/addproduct"
                class="btn btn-primary-outline py-2 px-3 mt-2">Produto</a>
-            <a href="/checkstorage"
-               class="btn btn-primary-outline py-2 px-3 mt-2">Estoque</a>
+            @if (auth()->user()->isadmin)
+                <a href="/checkstorage"
+                class="btn btn-primary-outline py-2 px-3 mt-2">Estoque</a>
+
+            @endif
 
         </div>
         <div>

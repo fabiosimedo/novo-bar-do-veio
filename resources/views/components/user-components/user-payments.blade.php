@@ -15,13 +15,13 @@
                 <button
                     class="btn btn-outline col-6 py-4">
 
-                    @if ($total < 0.0)
+                    @if ($total < 0)
 
                         <p class="text-white px-3">SALDO POSITIVO</p>
                         <p class="text-success" id="total">
 
                     @endif
-                    @if ($total > 0.0)
+                    @if ($total > 0)
 
                         <p class="text-danger px-3">SALDO NEGATIVO</p>
                         <p class="text-danger" id="total">

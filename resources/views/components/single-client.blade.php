@@ -42,12 +42,12 @@
                    class="btn btn-danger py-3">Nova Venda</a>
             </div>
 
-            <div>
+            {{-- <div>
 
                 <a href="/pagamentos/{{ $user->user_id }}"
                    class="btn btn-success py-3">Pagamentos</a>
 
-            </div>
+            </div> --}}
 
             @if (auth()->user()->isadmin || auth()->user()->isfunc)
             <div>

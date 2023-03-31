@@ -95,18 +95,22 @@ class User extends Controller
         $subtotal =
         Payments::showSubTotalPayment($request->input('date'), $user[0]->user_id);
 
-        Payments::updateGlobalPayment($user[0]->user_id);
+
 
         if($subtotal > 0) {
             Sales::where('sale_date', $request->input('date'))
             ->where('user_fk', $user[0]->user_id)
             ->update(['sale_paid' => 0 ]);
+
+            Payments::updateGlobalPayment($user[0]->user_id);
         }
 
-        if($subtotal == 0) {
+        if($subtotal <= 0) {
             Sales::where('sale_date', $request->input('date'))
             ->where('user_fk', $user[0]->user_id)
             ->update(['sale_paid' => 1 ]);
+
+            Payments::updateGlobalPayment($user[0]->user_id);
         }
 
         return view('components.user-components.details', [
@@ -163,8 +167,10 @@ class User extends Controller
                     'saled_name' =>  $key,
                     'saled_qtty' => $value,
                     'saled_price' => $price[0],
+                    'saled_total' => $value * $price[0],
                     'saled_client' => $request->input('user_id'),
-                    'saler' => auth()->user()->name,
+                    'saled_saler' => auth()->user()->name,
+                    'saled_receiver' => '',
                     'saled_date' => date(now())
                 ]);
             }
@@ -180,6 +186,8 @@ class User extends Controller
                 Payments::showSubTotalPayment($currDate, $user_id)
             ]);
 
+            Payments::updateSalesPayment($currDate, $user_id);
+
             Payments::updateGlobalPayment($user_id);
 
         } else {
@@ -192,15 +200,17 @@ class User extends Controller
                     'saled_name' =>  $key,
                     'saled_qtty' => $value,
                     'saled_price' => $price[0],
+                    'saled_total' => $value * $price[0],
                     'saled_client' => $request->input('user_id'),
-                    'saler' => auth()->user()->name,
+                    'saled_saler' => auth()->user()->name,
+                    'saled_receiver' => '',
                     'saled_date' => date(now())
                 ]);
             }
 
-            Payments::updateGlobalPayment($user_id);
-
             Payments::updateSalesPayment($currDate, $user_id);
+
+            Payments::updateGlobalPayment($user_id);
 
         }
 

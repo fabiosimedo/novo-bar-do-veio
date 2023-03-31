@@ -88,6 +88,15 @@
 
                 <span class="h4"> registrando venda Avulsa</span>
 
+            @if (auth()->user()->isadmin)
+
+                <p class="mt-3 text-center"><a href="/seeavulso"
+                        class="btn btn-outline-white">
+
+                        Visualizar Vendas Avulsas</a></p>
+
+            @endif
+
         </div>
 
         <form method="post"

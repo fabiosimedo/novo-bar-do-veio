@@ -98,7 +98,7 @@ class CreateCient extends Controller
                     'saled_qtty' => $value,
                     'saled_price' => $teste[0],
                     'saled_client' => 0,
-                    'saler' => auth()->user()->name,
+                    'saled_saler' => auth()->user()->name,
                     'saled_date' => date(now())
                 ]);
             }
