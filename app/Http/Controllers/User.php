@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Payments;
+use App\Models\GlobalPayments;
 use App\Models\Payments as ModelsPayments;
 use App\Models\Product;
 use App\Models\User as ModelsUser;
@@ -21,39 +22,15 @@ class User extends Controller
     public function index(ModelsUser $user)
     {
 
-        if(!auth()->user()) {
-            return redirect()->back()
-                    ->with('logado', 'Não autorizado...');
-        }
-
         if(auth()->user()->isadmin || auth()->user()->isfunc) {
-
             return view('components.admin-components.admin-panel', [
                 'users' => $user->orderBy('name', 'ASC')->get()
             ]);
-
-        } else {
-
-            $userDetail = ModelsUser::where('user_id', auth()->user()->user_id)->get();
-
-            $sale = Sales::where('saled_products_fk', auth()->user()->user_id)->get();
-
-            $products = SaledProducts::where('saled_client', auth()->user()->user_id)->get();
-
-            return view('components.user-components.user-page',  [
-                'user' => $userDetail[0],
-                'sales' => $sale,
-                'products' => $products,
-                'sum' =>
-                    Payments::showTotalClientDebit($userDetail[0]->user_id),
-                'payments' =>
-                    Payments::showPayments($userDetail[0]->user_id),
-                'totalsum' => Payments::showTotalClientDebit($userDetail[0]->user_id),
-            ]);
-
         }
-    }
 
+        return $this->show(auth()->user()->user_id);
+
+    }
 
     /**
      * Display the specified resource.
@@ -63,61 +40,49 @@ class User extends Controller
      */
     public function show($id)
     {
-        if(!auth()->user()) {
-            return redirect()->back()
-                    ->with('logado', 'Não autorizado...');
-        }
+        $user = ModelsUser::where('user_id', $id)->get()[0];
 
-        $saled = SaledProducts::where('saled_client', $id)->get();
+        $totals = Sales::where('sale_user_fk', $user->user_id)
+                        ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                        ->sum('monthly_total');
 
-        $user = ModelsUser::where('user_id', $id)->get();
+        $totalPaid = Sales::where('sale_user_fk', $user->user_id)
+                        ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                        ->sum('monthly_paid');
 
         return view('components.single-client', [
-            'user' => $user[0],
-            'sales' =>  Payments::show($id),
-            'products' => $saled,
-            'totalsum' => Payments::showTotalClientDebit($id),
-            'payments' => Payments::showPayments($id)
+            'user' => $user,
+            'totals' => ($totals - $totalPaid),
+            'saledate' =>
+            Sales::where('sale_user_fk', $user->user_id)
+                ->join('payments', 'payment_date', '=', 'sale_id')
+                ->orderBy('sale_date', 'DESC')->get()
         ]);
     }
 
 
     public function purshaseDetail(Request $request) {
 
-        $user = ModelsUser::where('user_id', $request->input('user'))->get();
+        $saleDetailsId = Sales::where('sale_user_fk', $request->input('user'))
+                        ->where('sale_date', $request->input('date'))
+                        ->get()[0];
 
-        $saledProducts = SaledProducts::where('saled_date', $request->input('date'))
-                            ->where('saled_client', $user[0]->user_id)
-                            ->orderBy('saled_id', 'DESC')->get();
+        $saledProducts = SaledProducts::where('saled_date', $saleDetailsId['sale_id'])
+                        ->orderBy('saled_date', 'DESC')->get();
 
-        $sum =
-        Payments::showTotalFromDate($request->input('date'), $user[0]->user_id);
-        $subtotal =
-        Payments::showSubTotalPayment($request->input('date'), $user[0]->user_id);
+        $user = ModelsUser::where('user_id', $saleDetailsId['sale_user_fk'])->get();
 
+        $totalSaledFromDay = ModelsPayments::where('payment_date', $saleDetailsId['sale_id'])
+                                                            ->pluck('payment_total_day')[0];
 
-
-        if($subtotal > 0) {
-            Sales::where('sale_date', $request->input('date'))
-            ->where('user_fk', $user[0]->user_id)
-            ->update(['sale_paid' => 0 ]);
-
-            Payments::updateGlobalPayment($user[0]->user_id);
-        }
-
-        if($subtotal <= 0) {
-            Sales::where('sale_date', $request->input('date'))
-            ->where('user_fk', $user[0]->user_id)
-            ->update(['sale_paid' => 1 ]);
-
-            Payments::updateGlobalPayment($user[0]->user_id);
-        }
+        $totalPaidFromDay = ModelsPayments::where('payment_date', $saleDetailsId['sale_id'])
+                                                            ->pluck('payment_paid_day')[0];
 
         return view('components.user-components.details', [
             'user' => $user[0],
+            'date' => $saleDetailsId,
             'details' => $saledProducts,
-            'sum' => $sum,
-            'subtotal' =>$subtotal
+            'total' => (float) ($totalSaledFromDay - $totalPaidFromDay)
         ]);
     }
 
@@ -128,11 +93,6 @@ class User extends Controller
      */
     public function create($id)
     {
-        if(!auth()->user()) {
-            return redirect()->back()
-                    ->with('logado', 'Não autorizado...');
-        }
-
         $userDetail = ModelsUser::where('user_id', $id)->get();
 
         return view('components.forms.insertProducts', [
@@ -142,88 +102,6 @@ class User extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $currDate = date(now()->format('Y-m-d'));
-
-        $user_id = $request->input('user_id');
-
-        $date = Sales::where('sale_date', $currDate)
-                        ->where('user_fk', $user_id)
-                        ->pluck('sale_date');
-
-        if(empty($date[0])) {
-
-            foreach(request()->input('products') as $key => $value) {
-
-                $price =  Product::where('product_name', $key)->pluck('product_price');
-
-                SaledProducts::create([
-                    'saled_name' =>  $key,
-                    'saled_qtty' => $value,
-                    'saled_price' => $price[0],
-                    'saled_total' => $value * $price[0],
-                    'saled_client' => $request->input('user_id'),
-                    'saled_saler' => auth()->user()->name,
-                    'saled_receiver' => '',
-                    'saled_date' => date(now())
-                ]);
-            }
-
-            Sales::create([
-                'user_fk' => $user_id,
-                'saled_products_fk' => $user_id,
-                'sale_date' => date(now()),
-                'sale_paid' => 0,
-                'sale_total_value' =>
-                Payments::showTotalFromDate($currDate, $user_id),
-                'sale_not_paid_value' =>
-                Payments::showSubTotalPayment($currDate, $user_id)
-            ]);
-
-            Payments::updateSalesPayment($currDate, $user_id);
-
-            Payments::updateGlobalPayment($user_id);
-
-        } else {
-
-            foreach(request()->input('products') as $key => $value) {
-
-                $price =  Product::where('product_name', $key)->pluck('product_price');
-
-                SaledProducts::create([
-                    'saled_name' =>  $key,
-                    'saled_qtty' => $value,
-                    'saled_price' => $price[0],
-                    'saled_total' => $value * $price[0],
-                    'saled_client' => $request->input('user_id'),
-                    'saled_saler' => auth()->user()->name,
-                    'saled_receiver' => '',
-                    'saled_date' => date(now())
-                ]);
-            }
-
-            Payments::updateSalesPayment($currDate, $user_id);
-
-            Payments::updateGlobalPayment($user_id);
-
-        }
-
-
-        $route = 'user/' . $request->input('user_id');
-
-        return redirect($route)
-                ->with('venda_cadastrada', 'OK nova venda cadastrada!');
-
-    }
-
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -231,35 +109,158 @@ class User extends Controller
      */
     public function edit(Request $request)
     {
+        $currDate = date(now()->format('Y-m-d'));
+        $date = Sales::where('sale_date', $currDate)
+                        ->where('sale_user_fk', $request['user_id'])
+                        ->pluck('sale_date');
+
+        if(empty($date[0])) {
+            Sales::create([
+                'sale_date' => date(now()->format('Y-m-d')),
+                'sale_user_fk' => $request->input('user_id')
+            ]);
+        }
+
         return view('components.forms.confirm-sale', [
             'products' => $request->input('products')
         ]);
     }
 
+
+    static public function seeIfDateExistsForUser($user_id) {
+        $currDate = date(now()->format('Y-m-d'));
+        $date = Sales::where('sale_date', $currDate)
+                        ->where('sale_user_fk', $user_id)->get();
+
+        return $date[0]['sale_id'];
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    static public function store()
+    {
+        foreach(request()->input('products') as $key => $value) {
+            $price =  Product::where('product_name', $key)->pluck('product_price');
+
+            SaledProducts::create([
+                'saled_name' =>  $key,
+                'saled_qtty' => (int) $value,
+                'saled_price' => (float) $price[0],
+                'saled_total' => (float) ($value * $price[0]),
+                'saled_saler' => auth()->user()->name,
+                'saled_receiver' => '',
+                'saled_date' => User::seeIfDateExistsForUser(request()->input('user_id')),
+            ]);
+        }
+
+        usleep(0.2);
+
+        User::insertSalesFromDay(request()->input('user_id'));
+        User::insertSalesFromMonth(request()->input('user_id'));
+
+        $route = 'user/' . request()->input('user_id');
+
+        return redirect($route)
+                ->with('venda_cadastrada', 'OK nova venda cadastrada!');
+
+    }
+
+
+    static public function insertSalesFromDay($user_id) {
+
+        $idFromDay = User::seeIfDateExistsForUser($user_id);
+
+        $totalFromDay = SaledProducts::where('saled_date', $idFromDay)->sum('saled_total');
+
+        $paymentsTable = ModelsPayments::where('payment_date', $idFromDay)->get();
+
+        if(empty($paymentsTable[0])) {
+            ModelsPayments::create([
+                'payment_date' => $idFromDay,
+                'payment_total_day' => (float) $totalFromDay,
+                'payment_paid_day' => 0
+            ]);
+
+        } else {
+            ModelsPayments::where('payment_date', $idFromDay)
+                ->update([
+                    'payment_total_day' => (float) $totalFromDay
+                ]);
+        }
+
+    }
+
+    static public function insertSalesFromMonth($user_id) {
+
+        $dateForUser = User::seeIfDateExistsForUser($user_id);
+
+        $paymentFromMonth =
+             GlobalPayments::where('monthly_payment_date', $dateForUser)->get();
+
+        $monthTotal = ModelsPayments::where('payment_date', $dateForUser)
+                                                        ->sum('payment_total_day');
+
+        $monthTotalPaid =
+                ModelsPayments::where('payment_date', $dateForUser)
+                                                        ->sum('payment_paid_day');
+
+        if(empty($paymentFromMonth[0])) {
+            GlobalPayments::create([
+                'monthly_payment_date' => $dateForUser,
+                'monthly_total' => $monthTotal,
+                'monthly_paid' => $monthTotalPaid,
+                'monthly_payment' => 0
+            ]);
+        } else {
+            GlobalPayments::where('monthly_payment_date', $dateForUser)
+                ->update([
+                    'monthly_total' => $monthTotal,
+                    // 'monthly_paid' => $monthTotalPaid
+                ]);
+        }
+
+    }
+
+
     public function destroysale()
     {
+        $dateofTheSale = request()->input('saled_date');
+        $valueofTheSale = request()->input('saled_total');
 
-        SaledProducts::where('saled_id', request()->input('saled_id'))
-        ->delete();
+        SaledProducts::where('saled_id', request()->input('saled_id'))->delete();
 
-        Payments::updateGlobalPayment(request()->input('user_id'));
+        $paymentToUpdate = ModelsPayments::where('payment_date', $dateofTheSale)
+                                                    ->pluck('payment_total_day')[0];
 
-        Payments::updateSalesPayment(request()->input('saled_date'), request()->input('user_id'));
+        $monthPaymentToUpdate =
+             GlobalPayments::where('monthly_payment_date', $dateofTheSale)
+                                                    ->pluck('monthly_total')[0];
+
+        ModelsPayments::where('payment_date', $dateofTheSale)
+                ->update([
+                    'payment_total_day' => ($paymentToUpdate - $valueofTheSale)
+                ]);
+
+        GlobalPayments::where('monthly_payment_date', $dateofTheSale)
+                ->update([
+                    'monthly_total' => ($monthPaymentToUpdate - $valueofTheSale)
+                ]);
+
+        if(empty(SaledProducts::where('saled_date', $dateofTheSale)->get()[0])) {
+            $routeToReturn = "user/". request()->input('user_id');
+            Sales::where('sale_id', $dateofTheSale)->delete();
+            return redirect($routeToReturn)->with('deletado', 'Venda e data deletados!');
+        }
 
         return back()->with('deletado', 'Venda deletada!');
-    }
-
-    public function destoydate() {
-
-        $redirect = 'user/' . request()->input('user_id');
-
-        Sales::where('sale_date', request()->input('date'))
-                ->where('user_fk', request()->input('user_id'))
-                ->delete();
-
-        return redirect($redirect)->with('deletadata', 'Data deletada!');
 
     }
+
 
     /**
      * Update the specified resource in storage.

@@ -53,28 +53,20 @@
 
                 @else
                     <p id="user-confirm" class="mt-4">
-                        {{-- {{ auth()->user()->name }} --}}
                         Esta quantidade está correta para
                        <p><span class="text-info h1">
                             {{ request()->input('user_name') }}?</span></p>
                     </p>
-
-
                 @endif
-
 
             </ul>
 
             <input type="hidden"
                     name="user_id"
-                    value="{{ request()->user_id }}">
-
-            <input type="hidden"
-                    name="name"
-                    value="{{ request()->name }}">
+                    value="
+                    {{ request()->routeIs('create-client-avulso-confirm') ? 0 : request()->user_id }}">
 
             <div class="d-flex justify-content-around">
-
                 <button type="submit"
                         class="btn btn-primary py-2"
                         id="submit-button">
@@ -86,11 +78,9 @@
                         class="btn btn-primary-outline mt-3">
                         <span class="h1 px-5">Voltar</span></a>
                 </div>
-
             </div>
         </div>
     </form>
-
 
 </div>
 

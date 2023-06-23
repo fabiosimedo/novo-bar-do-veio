@@ -7,10 +7,10 @@
             <p class="h2 text-info">{{ auth()->user()->name }}</p>
             <p>Está registrando um pagamento para </p>
             <div class="d-flex justify-content-around">
-                <a class="col-6 text-secondary mt-4"
-                    href="/user/{{ $user[0]->user_id }}">
+                <a class="col-6 text-secondary mt-2 h4"
+                    href="/user/{{ $user->user_id }}">
 
-                    {{ $user[0]->name }}</a>
+                    {{ $user->name }}</a>
 
                 <button
                     class="btn btn-outline col-6 py-4">
@@ -36,11 +36,12 @@
 
     <form action="/pagamentos" method="post" class="mt-4" id="pagar">
         @csrf
+
         <div class="form-group mt-4 d-flex flex-column align-items-center">
-            <label for="">Adicione um pagamento para data de hoje.</label>
+            <label for="">Pagar saldo negativo total.</label>
 
             <input type="hidden"
-                   name="payment_client" value="{{ $user[0]->user_id }}">
+                   name="payment_client" value="{{ $user->user_id }}">
             <input type="hidden"
                    name="payment_receiver" value="{{ auth()->user()->name }}">
 
@@ -56,7 +57,7 @@
                 <button type="submit"
                         class="btn btn-success py-5"
                         id="btn"
-                        >Confirmar Pagamento</button>
+                        >Pagar Restante</button>
 
             </div>
             <a onclick="history.back()"

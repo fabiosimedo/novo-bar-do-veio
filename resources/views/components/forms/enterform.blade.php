@@ -11,11 +11,12 @@
                    class="form-control"
                    id="telefone"
                    aria-describedby="telefoneHelp"
-                   placeholder="Digite seu telefone (ex: xxxxxxxxxxx) onze dígitos"
+                   placeholder="Seu telefone (ex: xxxxxxxxxxx) onze dígitos"
                    value="{{ old('celular') }}">
             <small id="emailHelp"
-                   class="form-text text-muted"
-            >Use um telefone válido caso perca sua senha.</small>
+                   class="form-text text-muted">
+                   Use um telefone válido caso perca sua senha.</small>
+
             @error('celular')
                 <p class="text-danger mt-2">{{ $message }}</p>
             @enderror
@@ -28,7 +29,7 @@
                    name="password"
                    class="form-control"
                    id="exampleInputPassword1"
-                   placeholder="Digite sua senha (mínimo seis dígitos)">
+                   placeholder="Sua senha (mínimo seis dígitos)">
             @error('password')
                 <p class="text-danger mt-2">{{ $message }}</p>
             @enderror
@@ -36,8 +37,7 @@
 
         <button type="submit"
                 class="btn btn-outline-primary mt-5 px-5 py-3"
-                style="width: 100%"
-        >Entrar</button>
+                style="width: 100%">Entrar</button>
 
     </fieldset>
 </form>

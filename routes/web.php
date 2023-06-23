@@ -24,10 +24,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [Home::class, 'index'])->name('login');
 Route::post('/entrar', [Home::class, 'userAccess']);
 
-// Route::get('/create', [CreateCient::class, 'createClientForm'])->name('create-client');
-// Route::post('/create', [CreateCient::class, 'createClient']);
-
 Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('/autenticado', [User::class, 'index'])->name('user-area');
+    Route::post('/logout', [User::class, 'destroy']);
 
     Route::get('/create', [CreateCient::class, 'createClientForm'])
         ->middleware(CheckPermission::class)->name('create-client');
@@ -43,11 +43,6 @@ Route::group(['middleware' => ['auth']], function () {
 
             /// arrumar para isfunc tambem acessar checkpermissiom
 
-
-
-    Route::get('/autenticado', [User::class, 'index'])->name('user-area');
-    Route::post('/logout', [User::class, 'destroy']);
-
     Route::get('/user/{id}', [User::class, 'show'])
         ->name('single-client');
     Route::get('/insertproducts/{user:id}', [User::class, 'create'])
@@ -59,10 +54,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/data', [User::class, 'purshaseDetail'])
         ->name('purshase-detail');
-
     Route::post('/destroysale', [User::class, 'destroysale']);
     Route::post('/destoydate', [User::class, 'destoydate']);
-
     Route::get('/updatepassword', [EditClient::class, 'index'])
             ->middleware('auth')->name('update-password');
     Route::post('/newpassword', [EditClient::class, 'editClientPassword']);

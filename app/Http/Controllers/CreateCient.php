@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\SaledProducts;
 use App\Models\Sales;
 use App\Models\User;
+use App\Http\Controllers\User as UserController;
 
 class CreateCient extends Controller
 {
@@ -64,50 +65,30 @@ class CreateCient extends Controller
     }
 
     public function clientAvulsoConfirm() {
-
         $currDate = date(now()->format('Y-m-d'));
 
         $date = Sales::where('sale_date', $currDate)
-                    ->where('user_fk', 0)
-                    ->pluck('sale_date');
+                    ->where('sale_user_fk', request()->input('user_id'))->get();
 
         if(empty($date[0])) {
 
-            $attributes = [
-                'user_fk' => 0,
-                'saled_products_fk' => 0,
-                'sale_date' => date(now())
-            ];
+            Sales::create([
+                'sale_date' => date(now()),
+                'sale_user_fk' => 0
+            ]);
 
-            if(isset($date[0]) === $currDate) {
-                $attributes['sale_date'] =
-                    Sales::where('sale_date', $currDate)
-                         ->where('user_fk', 0)
-                         ->update(['sale_date' => $currDate]);
-            }
+            UserController::store();
 
-            Sales::create($attributes);
+            return redirect('/autenticado')
+                ->with('venda_a_vulsa', 'OK venda avulsa cadastrada!');
+
         } else {
 
-            foreach(request()->input('products') as $key => $value) {
+            UserController::store();
 
-                $teste =  Product::where('product_name', $key)->pluck('product_price');
-
-                SaledProducts::create([
-                    'saled_name' =>  $key,
-                    'saled_qtty' => $value,
-                    'saled_price' => $teste[0],
-                    'saled_client' => 0,
-                    'saled_saler' => auth()->user()->name,
-                    'saled_date' => date(now())
-                ]);
-            }
-
-        }
-
-        return redirect('/autenticado')
-        ///////// redirecionar para check venda a vulsa por data (cria view para visualizar)
+            return redirect('/autenticado')
                 ->with('venda_a_vulsa', 'OK venda avulsa cadastrada!');
+        }
 
     }
 

@@ -21,7 +21,10 @@ class Home extends Controller
                     ->with('logado', "$user entrou no sistema!");
         }
 
-        return back()->withErrors([ 'celular' => 'Suas credenciais estão incorretas...']);
+        return back()
+                ->withErrors([
+                    'celular' => 'Suas credenciais estão incorretas...'
+                ]);
 
     }
 

@@ -6,104 +6,59 @@ use App\Models\Payments as ModelsPayments;
 use App\Models\SaledProducts;
 use App\Models\Sales;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Route;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\DB;
+use App\Models\GlobalPayments;
+use App\Http\Controllers\User as UserController;
 
 class Payments extends Controller
 {
 
-    public static function updateSalesPayment($currDate, $user_id) {
+    public static function updateGlobalPayment($userId, $paymentReceiver) {
 
-        $updateDateAndPaymentStatus = [
-            'sale_paid' => 0,
-            'sale_total_value' =>
-            Payments::showTotalFromDate($currDate, $user_id),
-            'sale_not_paid_value' =>
-            Payments::showSubTotalPayment($currDate, $user_id)
-        ];
-
-        Sales::where('sale_date', $currDate)
-                ->where('user_fk', $user_id)
-                ->update($updateDateAndPaymentStatus);
-    }
-
-
-    public static function updateGlobalPayment($user_id) {
-
-        $currDate = date(now()->format('Y-m-d'));
-
-        $totalFromSale = Sales::where('user_fk', $user_id)
-                        ->where('sale_date', $currDate)
-                        ->sum('sale_not_paid_value');
-
-        $paymentdate = ModelsPayments::where('payment_client', $user_id)
-                                ->where('payment_date', $currDate)->get();
-
-        if(empty($paymentdate[0]->payment_date)) {
-
-            ModelsPayments::create([
-                'payment_client' => $user_id,
-                'payment_receiver' => '',
-                'payment_value' => 0,
-                'payment_remainder' => $totalFromSale,
-                'payment_global' => 0,
-                'payment_date' => date(now())
-            ]);
-        }
-
-        if(isset($paymentdate[0]->payment_date)) {
-
-            ModelsPayments::where('payment_client', $user_id)
-                        ->where('payment_date', $currDate)
-                        ->update([ 'payment_remainder' => $totalFromSale ]);
+        // return Sales::where('sale_user_fk', $userId)
+        //     ->join('payments', 'payment_id', '=', 'sale_id')
+        //     ->where('sale_date', '<=', date(now()))
+        //     ->where('payment_remainder', '>', 0)
+        //     ->orderBy('sale_date', 'ASC')->limit(1)
+        //     ->get();
+        $occurrenceNumberOfLines = Sales::where('sale_user_fk', $userId)
+            ->join('payments', 'payment_id', '=', 'sale_id')
+            ->where('sale_date', '<=', date(now()))
+            ->where('payment_paid', '>', 'payment_day_purchased')
+            ->orderBy('sale_date', 'ASC')
+            ->get();
+        dump($occurrenceNumberOfLines);
+        foreach($occurrenceNumberOfLines as $linesToUpdate) {
+            // dump($linesToUpdate);
+            // Sales::where('sale_user_fk', $userId)
+            // ->join('payments', 'payment_id', '=', 'sale_id')
+            // ->where('sale_date', '<=', date(now()))
+            // ->where('payment_remainder', '>', 0)
+            // ->orderBy('sale_date', 'ASC')->limit(1)->update($updates);
         }
 
     }
 
 
-    // public static function updatePaymentsFromDay($paidvalue, $user_id) {
     public static function updatePaymentsFromDay() {
 
-        ////atualizar pagamentos para ser descontados de cada dia individualmente
+        $userId = request()->input('payment_client');
+        $paymentReceiver = request()->input('payment_receiver');
+
+        return Payments::updateGlobalPayment($userId, $paymentReceiver) ;
+
+        return back()->with('pagamento-global', 'Ok pagamento recebido!');
 
     }
 
 
     public static function showTotalClientDebit($id)
     {
-
-        $total = ModelsPayments::where('payment_client', $id)
-                        ->selectRaw(
-                            'sum((payment_remainder - payment_value) - payment_global) as Total'
-                            )
-                        ->pluck('Total');
-
-        return $total[0];
+        return Sales::where('sale_user_fk', $id)
+                    ->join('payments', 'payment_id', '=', 'sale_id')
+                    ->sum('payment_remainder');
 
     }
 
-    public static function showTotalFromDate($date, $user) {
-
-        $sum = SaledProducts::where('saled_date', $date)
-                        ->where('saled_client', $user)
-                        ->sum('saled_total');
-
-        return $sum;
-
-    }
-
-    public static function showSubTotalPayment($date, $user) {
-
-        $subtotal = SaledProducts::where('saled_date', $date)
-                            ->where('saled_client', $user)
-                            ->where('saled_paid', 0)
-                            ->sum('saled_total');
-
-        return $subtotal;
-
-    }
 
     /**
      * Display a listing of the resource.
@@ -113,66 +68,11 @@ class Payments extends Controller
     public function index($id)
     {
         return view('components.user-components.user-payments', [
-            'payments' =>
-                SaledProducts::where('saled_client', $id)->get(),
-            'user' => User::where('user_id', $id)->get(),
+            'user' => User::where('user_id', $id)->get()[0],
             'total' => Payments::showTotalClientDebit($id)
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $user = request()->input('payment_client');
-        $receiver = request()->input('payment_receiver');
-        $paidvalue = request()->input('payment_value');
-        $currDate = date(now()->format('Y-m-d'));
-
-        $paymentexists =  ModelsPayments::where('payment_client', $user)
-                                ->where('payment_date', $currDate)->get();
-
-        if(empty($paymentexists[0])) {
-
-            ModelsPayments::create([
-                'payment_client' => $user,
-                'payment_receiver' => $receiver,
-                'payment_value' => 0,
-                'payment_remainder' => 0,
-                'payment_global' => $paidvalue,
-                'payment_date' => date(now())
-            ]);
-
-            Payments::updatePaymentsFromDay($paidvalue, $user);
-
-            Payments::updateSalesPayment($currDate, $user);
-
-        }
-
-        if(isset($paymentexists[0])) {
-
-            $savedPaymmentGlobal = $paymentexists[0]->payment_global;
-
-            ModelsPayments::where('payment_client', $user)
-                        ->where('payment_date', $currDate)
-                        ->update([
-                            'payment_receiver' => $receiver,
-                            'payment_global' => $savedPaymmentGlobal + $paidvalue
-                        ]);
-
-            Payments::updatePaymentsFromDay($paidvalue, $user);
-
-            Payments::updateSalesPayment($currDate, $user);
-
-        }
-
-        return redirect('user/' . $user)
-                ->with('pagamento', 'Pagamento realizado com successo!');
-
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -182,19 +82,7 @@ class Payments extends Controller
      */
     public static function showPayments($id)
     {
-        return ModelsPayments::where('payment_client', $id)->get();
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Payments  $payments
-     * @return \Illuminate\Http\Response
-     */
-    public static function show($id)
-    {
-        return Sales::where('user_fk', $id)
-                    ->orderBy('sale_date', 'DESC')->get();
+        return ModelsPayments::where('payment_paid', $id)->get();
     }
 
     /**
@@ -207,27 +95,31 @@ class Payments extends Controller
     public static function update()
     {
         $saleDate = request()->input('datavenda');
-        $client = request()->input('client');
+        $client = request()->input('user_id');
 
-        $updates = [
-            'saled_receiver' => auth()->user()->name,
-            'saled_paid' => 1
-        ];
+        $valueToPay = SaledProducts::where('saled_date', $saleDate)
+                                   ->where('saled_receiver', '')
+                                   ->sum('saled_total');
 
         SaledProducts::where('saled_date', $saleDate)
-                        ->where('saled_client', $client)
-                        ->where('saled_paid', 0)
-                        ->update($updates);
+                     ->where('saled_receiver', '')
+                     ->update([ 'saled_receiver' => auth()->user()->name ]);
 
-        $attributes = [
-            'sale_paid' => 1,
-            'sale_total_value' => Payments::showTotalFromDate($saleDate, $client),
-            'sale_not_paid_value' => Payments::showSubTotalPayment($saleDate, $client)
-        ];
+        $alreadyPaidFromDay =
+         ModelsPayments::where('payment_date', $saleDate)->pluck('payment_paid_day')[0];
 
-        Sales::where('sale_date', $saleDate)
-                ->where('user_fk', $client)
-                ->update($attributes);
+        $alreadyPaidFromMonth =
+         GlobalPayments::where('monthly_payment_date', $saleDate)->pluck('monthly_paid')[0];
+
+        ModelsPayments::where('payment_date', $saleDate)
+                        ->update([
+                            'payment_paid_day' => (float) ($alreadyPaidFromDay + $valueToPay)
+                        ]);
+
+        GlobalPayments::where('monthly_payment_date', $saleDate)
+                ->update([
+                    'monthly_paid' => (float) ($alreadyPaidFromMonth + $valueToPay)
+                ]);
 
         return back()
                 ->with('payment-for-single-purshase', 'Pagamento realizado para essa data');

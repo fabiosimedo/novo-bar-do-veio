@@ -37,7 +37,7 @@
 
                         @auth
 
-                            <form class="d-flex bt-5 mb-5">
+                            <form class="d-flex bt-5 mb-2">
                                 <input class="form-control me-sm-2 mt-3 py-3"
                                     type="text"
                                     placeholder="Procurar por nome ou data"
@@ -48,7 +48,7 @@
                         @endauth
 
                         <a href="https://fabiosimedo.github.io/bar-do-veio/index.html"
-                           class="py-3 mt-5 h5">VOLTAR PARA O SITE DO BAR</a>
+                           class="py-3 h5 btn btn-dark" target="_blank">Ir para Site do Bar do Véio</a>
 
                     </div>
                 </div>
@@ -67,29 +67,18 @@
 
         <script>
 
-            const alerta = document.querySelector('#alertMessage')
+            const alerta = document.querySelectorAll('#alertMessage')
 
-            if(alerta !== null) {
-                // if (alerta.matches('.example')) {
-                //     clockStart()
-                // }
+            alerta.forEach(element => {
+                console.log(element)
+                if(element !== null) {
 
-                setTimeout(() => {
-                    alerta.remove()
-                }, 4000);
+                    setTimeout(() => {
+                        element.remove()
+                    }, 4000);
 
-            }
-
-            // function clockStart() {
-            //     setInterval(function() {
-            //                 date = new Date()
-            //                 let hour = date.getHours();
-            //                 let minutes = date.getMinutes();
-            //                 let seconds = date.getSeconds();
-            //                 document.getElementById("demo")
-            //                     .innerHTML = hour + ":"+ minutes + ":" + seconds;
-            //     }, 1000)
-            // }
+                }
+            });
 
         </script>
 

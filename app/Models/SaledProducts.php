@@ -13,8 +13,8 @@ class SaledProducts extends Model
 
     protected $guarded = [];
 
-    public function salesProducts()
-    {
-        return $this->hasMany(Sales::class);
-    }
+    // public function salesProducts()
+    // {
+    //     return $this->hasMany(Sales::class);
+    // }
 }

@@ -14,10 +14,12 @@
     </div>
 
     <x-client-product-list
-            :sales="$sales" :user="$user"
-            :products="$products" :sum="$sum"
+            :sales="$sales"
+            :user="$user"
+            :products="$products"
+            :sum="$sum"
             :payments="$payments"
             :totalsum="$totalsum"
-            />
+    />
 
 </x-header-and-nav>

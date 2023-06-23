@@ -81,3 +81,17 @@
         {{ session('payment-for-single-purshase') }}
     </div>
 @endif
+
+@if (session()->has('primeira_venda'))
+    <div class="alert alert-warning mt-3"
+         role="alert" id="alertMessage">
+        {{ session('primeira_venda') }}
+    </div>
+@endif
+
+@if (session()->has('pagamento-global'))
+    <div class="alert alert-warning mt-3"
+         role="alert" id="alertMessage">
+        {{ session('pagamento-global') }}
+    </div>
+@endif

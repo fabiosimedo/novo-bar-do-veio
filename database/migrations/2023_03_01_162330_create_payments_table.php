@@ -14,13 +14,10 @@ class CreatePaymentsTable extends Migration
     public function up()
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->id('payment_id');
-            $table->integer('payment_client');
-            $table->string('payment_receiver');
-            $table->decimal('payment_value', 8, 2);
-            $table->decimal('payment_remainder', 8, 2);
-            $table->decimal('payment_global', 8, 2);
-            $table->date('payment_date');
+            $table->increments('payment_id');
+            $table->integer('payment_date')->unsigned();
+            $table->decimal('payment_total_day', 8, 2);
+            $table->decimal('payment_paid_day', 8, 2);
         });
     }
 
