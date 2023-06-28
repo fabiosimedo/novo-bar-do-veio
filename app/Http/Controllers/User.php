@@ -50,9 +50,13 @@ class User extends Controller
                         ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
                         ->sum('monthly_paid');
 
+        $totalFromMothPayment = Sales::where('sale_user_fk', $user->user_id)
+                        ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                        ->sum('monthly_payment');
+
         return view('components.single-client', [
             'user' => $user,
-            'totals' => ($totals - $totalPaid),
+            'totals' => ($totals - $totalPaid - $totalFromMothPayment),
             'saledate' =>
             Sales::where('sale_user_fk', $user->user_id)
                 ->join('payments', 'payment_date', '=', 'sale_id')
@@ -72,17 +76,19 @@ class User extends Controller
 
         $user = ModelsUser::where('user_id', $saleDetailsId['sale_user_fk'])->get();
 
-        $totalSaledFromDay = ModelsPayments::where('payment_date', $saleDetailsId['sale_id'])
-                                                            ->pluck('payment_total_day')[0];
+        $totalSaledFromDay = SaledProducts::where('saled_date', $saleDetailsId['sale_id'])
+                                                        ->where('saled_receiver', '')
+                                                        ->sum('saled_total');
 
-        $totalPaidFromDay = ModelsPayments::where('payment_date', $saleDetailsId['sale_id'])
-                                                            ->pluck('payment_paid_day')[0];
+        $monthPayment = ModelsPayments::where('payment_date', $saleDetailsId['sale_id'])
+                                                            ->pluck('payment_month')[0];
 
         return view('components.user-components.details', [
             'user' => $user[0],
             'date' => $saleDetailsId,
             'details' => $saledProducts,
-            'total' => (float) ($totalSaledFromDay - $totalPaidFromDay)
+            'total' => (float) ($totalSaledFromDay),
+            'monthpayment' => $monthPayment
         ]);
     }
 
@@ -183,7 +189,8 @@ class User extends Controller
             ModelsPayments::create([
                 'payment_date' => $idFromDay,
                 'payment_total_day' => (float) $totalFromDay,
-                'payment_paid_day' => 0
+                'payment_paid_day' => 0,
+                'payment_month' => 0
             ]);
 
         } else {
@@ -213,14 +220,13 @@ class User extends Controller
             GlobalPayments::create([
                 'monthly_payment_date' => $dateForUser,
                 'monthly_total' => $monthTotal,
-                'monthly_paid' => $monthTotalPaid,
+                'monthly_paid' => 0,
                 'monthly_payment' => 0
             ]);
         } else {
             GlobalPayments::where('monthly_payment_date', $dateForUser)
                 ->update([
                     'monthly_total' => $monthTotal,
-                    // 'monthly_paid' => $monthTotalPaid
                 ]);
         }
 
@@ -254,6 +260,7 @@ class User extends Controller
         if(empty(SaledProducts::where('saled_date', $dateofTheSale)->get()[0])) {
             $routeToReturn = "user/". request()->input('user_id');
             Sales::where('sale_id', $dateofTheSale)->delete();
+
             return redirect($routeToReturn)->with('deletado', 'Venda e data deletados!');
         }
 

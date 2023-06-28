@@ -89,9 +89,10 @@
     </div>
 @endif
 
-@if (session()->has('pagamento-global'))
+@if (session()->has('pagamento-mensal'))
     <div class="alert alert-warning mt-3"
          role="alert" id="alertMessage">
-        {{ session('pagamento-global') }}
+        {{ session('pagamento-mensal') }}
     </div>
 @endif
+

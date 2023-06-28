@@ -58,14 +58,20 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/destoydate', [User::class, 'destoydate']);
     Route::get('/updatepassword', [EditClient::class, 'index'])
             ->middleware('auth')->name('update-password');
+
+    Route::get('/updatepasswordandcellphone', [EditClient::class, 'index'])
+            ->middleware('auth')->name('update-password-and-cellphone');
+
     Route::post('/newpassword', [EditClient::class, 'editClientPassword']);
+
+
 
 
     ##### rotas de pagamentos
     Route::get('/pagamentos/{id}', [Payments::class, 'index']);
     Route::post('/pagamentos', [Payments::class, 'create']);
 
-    Route::post('/pagamentos', [Payments::class, 'updatePaymentsFromDay']);
+    Route::post('/pagamentos', [Payments::class, 'updatePaymentFromMonth']);
 
     Route::post('/payallsale', [Payments::class, 'update']);
     Route::post('/destroypayment', [Payments::class, 'destroy']);

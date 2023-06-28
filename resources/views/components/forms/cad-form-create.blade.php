@@ -135,6 +135,10 @@
 
 @endif
 
+@if (request()->routeIs('update-password-and-cellphone'))
+    <div>rota pra criar celular e senha</div>
+@endif
+
 <div class="text-center mt-4">
     <a onclick="history.back()" class="btn btn-primary-outline mt-4">Voltar</a>
 </div>

@@ -15,19 +15,16 @@
                 <button
                     class="btn btn-outline col-6 py-4">
 
-                    @if ($total < 0)
-
-                        <p class="text-white px-3">SALDO POSITIVO</p>
-                        <p class="text-success" id="total">
-
-                    @endif
                     @if ($total > 0)
 
-                        <p class="text-danger px-3">SALDO NEGATIVO</p>
-                        <p class="text-danger" id="total">
+                        <p class="text-danger px-3" id="total">SALDO NEGATIVO</p>
+                        <p class="text-danger" id="btn">
 
                     @endif
-                    R$ {{ $total }}</p></button>
+
+                        R$ {{ substr_replace(number_format($total, 2), ',', -3, -2) }}
+                    </p></button>
+
             </div>
 
         </div>
@@ -45,18 +42,9 @@
             <input type="hidden"
                    name="payment_receiver" value="{{ auth()->user()->name }}">
 
-            <input type="number" name="payment_value"
-                   class="form-control mb-5 mt-4 w-50 py-3"
-                   placeholder="Valor do Pagamento"
-                   value="{{ old('payment_value') }}"
-                   pattern="[0-9]+([\.,][0-9]+)?" step="0.01"
-                   id="valor"
-                   required>
-
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between mt-4">
                 <button type="submit"
                         class="btn btn-success py-5"
-                        id="btn"
                         >Pagar Restante</button>
 
             </div>
@@ -64,26 +52,21 @@
                    class="btn btn-primary-outline py-5 w-50">Voltar</a>
         </div>
 
-        @error('preco')
-            <p class="text-danger mt-2">{{ $message }}</p>
-        @enderror
-
     </form>
 
 </x-header-and-nav>
 
 <script>
 
-    const valor = document.querySelector('#valor')
+    const total = document.querySelector('#total')
     const form = document.querySelector('#pagar')
     const btn = document.querySelector('#btn')
 
     form.addEventListener('submit', e => {
         e.preventDefault()
 
-        if(confirm(`O valor do pagamento está correto?\n Valor: R$${valor.value}`))
+        if(confirm(`Pagar valor total de débitos?`))
         {
-            btn.disabled = true
             e.target.submit()
         }
 

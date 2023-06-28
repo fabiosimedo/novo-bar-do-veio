@@ -21,7 +21,7 @@
 
             <div class="text-center">
                 <span>
-                    @if ($total > 0)
+                    @if (($total > 0) || ($monthpayment == 0))
                         <p>R$
                             <span class="text-danger">
                                 {{ substr_replace(number_format($total, 2), ',', -3, -2) }}
@@ -40,7 +40,7 @@
 
             @if (auth()->user()->isadmin || auth()->user()->isfunc)
 
-                @if ($total > 0)
+                @if (($total > 0) || ($monthpayment == 0))
                 <div>
                     <form action="/payallsale" method="post">
                         @csrf

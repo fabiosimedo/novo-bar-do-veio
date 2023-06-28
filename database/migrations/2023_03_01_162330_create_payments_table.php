@@ -18,6 +18,7 @@ class CreatePaymentsTable extends Migration
             $table->integer('payment_date')->unsigned();
             $table->decimal('payment_total_day', 8, 2);
             $table->decimal('payment_paid_day', 8, 2);
+            $table->integer('payment_month');
         });
     }
 

@@ -6,7 +6,7 @@
 
         <link rel="stylesheet" href="{{ url('bootstrap.min.css') }}">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous" defer></script>
-        {{-- <link rel="icon" href="{{ public_path('favicon.png') }}" type="image/x-icon"> --}}
+        <link rel="icon" href="{{ public_path('favicon.png') }}" type="image/x-icon">
         <title>{{ auth()->user()->name ?? 'Bar do Véio' }}</title>
     </head>
 

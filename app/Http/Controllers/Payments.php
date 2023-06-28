@@ -11,52 +11,40 @@ use App\Http\Controllers\User as UserController;
 
 class Payments extends Controller
 {
+    public static function updatePaymentFromMonth() {
 
-    public static function updateGlobalPayment($userId, $paymentReceiver) {
+        $userClient = request()->input('payment_client');
 
-        // return Sales::where('sale_user_fk', $userId)
-        //     ->join('payments', 'payment_id', '=', 'sale_id')
-        //     ->where('sale_date', '<=', date(now()))
-        //     ->where('payment_remainder', '>', 0)
-        //     ->orderBy('sale_date', 'ASC')->limit(1)
-        //     ->get();
-        $occurrenceNumberOfLines = Sales::where('sale_user_fk', $userId)
-            ->join('payments', 'payment_id', '=', 'sale_id')
-            ->where('sale_date', '<=', date(now()))
-            ->where('payment_paid', '>', 'payment_day_purchased')
-            ->orderBy('sale_date', 'ASC')
-            ->get();
-        dump($occurrenceNumberOfLines);
-        foreach($occurrenceNumberOfLines as $linesToUpdate) {
-            // dump($linesToUpdate);
-            // Sales::where('sale_user_fk', $userId)
-            // ->join('payments', 'payment_id', '=', 'sale_id')
-            // ->where('sale_date', '<=', date(now()))
-            // ->where('payment_remainder', '>', 0)
-            // ->orderBy('sale_date', 'ASC')->limit(1)->update($updates);
-        }
+        $totalDebits = Sales::where('sale_user_fk', $userClient)
+                            ->join('saled_products', 'saled_date', '=', 'sale_id')
+                            ->where('saled_receiver', '')->sum('saled_total');
 
-    }
+        Sales::where('sale_user_fk', $userClient)
+                        ->join('payments', 'payment_date', '=', 'sale_id')
+                        ->where('payment_month', 0)
+                        ->update([
+                            'payment_month' => 1
+                        ]);
 
+        Sales::where('sale_user_fk', $userClient)
+                            ->join('saled_products', 'saled_date', '=', 'sale_id')
+                            ->where('saled_receiver', '')
+                            ->update([
+                                'saled_receiver' => auth()->user()->name
+                            ]);
 
-    public static function updatePaymentsFromDay() {
+        $alreadyPaidFromMonth = Sales::where('sale_user_fk', $userClient)
+                    ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                    ->pluck('monthly_payment')[0];
 
-        $userId = request()->input('payment_client');
-        $paymentReceiver = request()->input('payment_receiver');
-
-        return Payments::updateGlobalPayment($userId, $paymentReceiver) ;
-
-        return back()->with('pagamento-global', 'Ok pagamento recebido!');
-
-    }
+        Sales::where('sale_user_fk', $userClient)
+                    ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                    ->update([
+                        'monthly_payment' => ((float) $alreadyPaidFromMonth + $totalDebits)
+                    ]);
 
 
-    public static function showTotalClientDebit($id)
-    {
-        return Sales::where('sale_user_fk', $id)
-                    ->join('payments', 'payment_id', '=', 'sale_id')
-                    ->sum('payment_remainder');
-
+        return redirect('user/'.$userClient)->with('pagamento-mensal', 'Pagamento abatido do total!');
     }
 
 
@@ -67,9 +55,21 @@ class Payments extends Controller
      */
     public function index($id)
     {
+        $total = Sales::where('sale_user_fk', $id)
+                        ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                        ->sum('monthly_total');
+
+        $totalPaid = Sales::where('sale_user_fk', $id)
+                        ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                        ->sum('monthly_paid');
+
+        $totalFromMothPayment = Sales::where('sale_user_fk', $id)
+                        ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                        ->sum('monthly_payment');
+
         return view('components.user-components.user-payments', [
             'user' => User::where('user_id', $id)->get()[0],
-            'total' => Payments::showTotalClientDebit($id)
+            'total' => (float) ($total - $totalPaid - $totalFromMothPayment)
         ]);
     }
 
@@ -95,15 +95,10 @@ class Payments extends Controller
     public static function update()
     {
         $saleDate = request()->input('datavenda');
-        $client = request()->input('user_id');
 
         $valueToPay = SaledProducts::where('saled_date', $saleDate)
                                    ->where('saled_receiver', '')
                                    ->sum('saled_total');
-
-        SaledProducts::where('saled_date', $saleDate)
-                     ->where('saled_receiver', '')
-                     ->update([ 'saled_receiver' => auth()->user()->name ]);
 
         $alreadyPaidFromDay =
          ModelsPayments::where('payment_date', $saleDate)->pluck('payment_paid_day')[0];
@@ -120,6 +115,10 @@ class Payments extends Controller
                 ->update([
                     'monthly_paid' => (float) ($alreadyPaidFromMonth + $valueToPay)
                 ]);
+
+        SaledProducts::where('saled_date', $saleDate)
+                ->where('saled_receiver', '')
+                ->update([ 'saled_receiver' => auth()->user()->name ]);
 
         return back()
                 ->with('payment-for-single-purshase', 'Pagamento realizado para essa data');

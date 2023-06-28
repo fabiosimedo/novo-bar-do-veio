@@ -18,6 +18,11 @@
                         <p class="h3 text-center">
                             {{ $user->name }}
                         </p>
+                        @if ($user->celular === null)
+                            <small id="emailHelp" class="form-text text-muted">
+                                Usuário sem celular cadastrado!
+                            </small>
+                        @endif
                     </div>
 
                     <div>
@@ -63,20 +68,35 @@
 
 
             @if (auth()->user()->isadmin)
-            <div>
 
-                <form action="/updatepassword" method="get">
-                    @csrf
+                @if($user->celular === null)
+                    <div>
+                        <form action="/updatepasswordandcellphone" method="get">
+                            @csrf
 
-                    <input type="hidden"
-                           name="user_id"
-                           value="{{ $user->user_id }}">
+                            <input type="hidden"
+                                name="user_id"
+                                value="{{ $user->user_id }}">
 
-                    <input type="submit"
-                           class="btn btn-info py-3" value="Edita Senha" />
-                </form>
+                            <input type="submit"
+                                class="btn btn-info py-3" value="Adicionar Celular" />
+                        </form>
+                    </div>
+                @else
+                    <div>
+                        <form action="/updatepassword" method="get">
+                            @csrf
 
-            </div>
+                            <input type="hidden"
+                                name="user_id"
+                                value="{{ $user->user_id }}">
+
+                            <input type="submit"
+                                class="btn btn-info py-3" value="Edita Senha" />
+                        </form>
+                    </div>
+                @endif
+
             @endif
 
         @endif
