@@ -48,10 +48,11 @@
         <ul class="list-group">
            <a href="user/{{ $user->user_id }}" style="text-decoration: none">
 
-                <li class="list-group-item mt-1 py-3 d-flex justify-content-between">
-                    {{ $user->name }}
-                </li>
-
+                @if (! $user->isadmin)
+                    <li class="list-group-item mt-1 py-3 d-flex justify-content-between">
+                        {{ $user->name }}
+                    </li>
+                @endif
 
            </a>
         </ul>
