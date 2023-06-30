@@ -48,12 +48,7 @@
                                 {{ \Carbon\Carbon::parse($sale->sale_date)
                                                 ->format('d/m/Y') }}
                             </span>
-                            {{-- @if ($sale->payment_remainder > 0)
-                                <span class="text-danger">Há Débitos</span>
-                            @else
-                                <span class="text-info">OK</span>
-                            @endif --}}
-
+                                    {{-- lógica para descobrir data da dívida --}}
                         </li>
                     </button>
                 </form>

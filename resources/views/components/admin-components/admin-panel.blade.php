@@ -1,4 +1,5 @@
 <x-header-and-nav>
+
     <div class="d-flex justify-content-between">
         <div>
 
@@ -51,6 +52,24 @@
                 @if (! $user->isadmin)
                     <li class="list-group-item mt-1 py-3 d-flex justify-content-between">
                         {{ $user->name }}
+
+                        @if (auth()->user()->isadmin)
+                            <form action="deleteclient/{{ $user->user_id }}"
+                                method="post"
+                                style="text-decoration: none"
+                                id="delete-client"
+                            >
+                            @csrf
+
+                                <button
+                                    class="text-danger"
+                                    style=
+                                    "padding: 0;
+                                    border: none;
+                                    background: none;">Deletar</button>
+                            </form>
+                        @endif
+
                     </li>
                 @endif
 
@@ -59,3 +78,23 @@
     @endforeach
 
 </x-header-and-nav>
+
+<script>
+    const deleteClient = document.querySelectorAll('#delete-client')
+
+    deleteClient.forEach(e => {
+        e.addEventListener('click', e => {
+            e.preventDefault()
+            e.target.parentElement.parentElement.classList.add('border', 'border-danger')
+
+            setTimeout(() => {
+                if(confirm('Você quer deletar esse usuáio?')) {
+                    e.target.parentElement.submit()
+                } else {
+                    e.target.parentElement.parentElement.classList.remove('border', 'border-danger')
+                }
+            }, 400)
+        })
+    })
+
+</script>

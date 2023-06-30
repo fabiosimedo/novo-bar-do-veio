@@ -23,8 +23,11 @@ class User extends Controller
     {
 
         if(auth()->user()->isadmin || auth()->user()->isfunc) {
+
+
             return view('components.admin-components.admin-panel', [
-                'users' => $user->orderBy('name', 'ASC')->get()
+                'users' => $user->orderBy('name', 'ASC')->get(),
+                // 'total' => Total pra saber queem está devendo
             ]);
         }
 
@@ -54,6 +57,13 @@ class User extends Controller
                         ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
                         ->sum('monthly_payment');
 
+        // $totalCalculatedPayment =
+        //         ModelsPayments::where('payment_date', )
+        //         ->selectRaw('(payment_total_day-payment_paid_day) as totalpaymentday')->get()[0];
+
+        // $monthPayment = ModelsPayments::where('payment_date', $saleDetailsId['sale_id'])
+        //                                                     ->pluck('payment_month')[0];
+
         return view('components.single-client', [
             'user' => $user,
             'totals' => ($totals - $totalPaid - $totalFromMothPayment),
@@ -80,6 +90,10 @@ class User extends Controller
                                                         ->where('saled_receiver', '')
                                                         ->sum('saled_total');
 
+        $totalCalculatedPayment =
+                ModelsPayments::where('payment_date', $saleDetailsId['sale_id'])
+                    ->selectRaw('(payment_total_day-payment_paid_day) as totalpaymentday')->get()[0];
+
         $monthPayment = ModelsPayments::where('payment_date', $saleDetailsId['sale_id'])
                                                             ->pluck('payment_month')[0];
 
@@ -88,6 +102,7 @@ class User extends Controller
             'date' => $saleDetailsId,
             'details' => $saledProducts,
             'total' => (float) ($totalSaledFromDay),
+            'totalpaymentday' => $totalCalculatedPayment['totalpaymentday'],
             'monthpayment' => $monthPayment
         ]);
     }
@@ -276,9 +291,12 @@ class User extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function deleteClient($id)
     {
-        return $request->input();
+
+        ModelsUser::where('user_id', $id)->delete();
+
+        return back();
     }
 
     /**

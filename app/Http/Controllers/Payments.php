@@ -14,6 +14,7 @@ class Payments extends Controller
     public static function updatePaymentFromMonth() {
 
         $userClient = request()->input('payment_client');
+        $currDate = date(now()->format('Y-m-d'));
 
         $totalDebits = Sales::where('sale_user_fk', $userClient)
                             ->join('saled_products', 'saled_date', '=', 'sale_id')
@@ -34,11 +35,13 @@ class Payments extends Controller
                             ]);
 
         $alreadyPaidFromMonth = Sales::where('sale_user_fk', $userClient)
+                    ->where('sale_date', $currDate)
                     ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
                     ->pluck('monthly_payment')[0];
 
         Sales::where('sale_user_fk', $userClient)
                     ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                    ->where('sale_date', $currDate)
                     ->update([
                         'monthly_payment' => ((float) $alreadyPaidFromMonth + $totalDebits)
                     ]);

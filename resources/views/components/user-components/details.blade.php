@@ -1,5 +1,5 @@
 <x-header-and-nav>
-
+{{-- @dd($total) --}}
     <div class="d-flex justify-content-around">
         <div class="py-2">
             <span class="h4">{{ $user->name }}</span>
@@ -20,42 +20,32 @@
         <li class="list-group-item d-flex justify-content-around">
 
             <div class="text-center">
-                <span>
-                    @if (($total > 0) || ($monthpayment == 0))
-                        <p>R$
-                            <span class="text-danger">
-                                {{ substr_replace(number_format($total, 2), ',', -3, -2) }}
-                                <p>Saldo Devedor</p>
-                            </span>
-                        </p>
-                    @else
-                        <span>
-                            <span class="h4 text-white" id="total">
-                                Tudo pago aqui!
-                            </span>
+                <span id="totals">
+                    <p>R$
+                        <span class="text-danger">
+                            {{ substr_replace(number_format($total, 2), ',', -3, -2) }}
                         </span>
-                    @endif
+                        <p>Saldo Devedor</p>
+                    </p>
                 </span>
             </div>
 
             @if (auth()->user()->isadmin || auth()->user()->isfunc)
 
-                @if (($total > 0) || ($monthpayment == 0))
-                <div>
-                    <form action="/payallsale" method="post">
-                        @csrf
+                    <div id="payment-form">
+                        <form action="/payallsale" method="post">
+                            @csrf
 
-                        <input type="hidden" name="datavenda"
-                                value="{{ $details[0]->saled_date }}">
-                        <input type="hidden" name="user_id"
-                                value="{{ $user->user_id }}">
+                            <input type="hidden" name="datavenda"
+                                    value="{{ $details[0]->saled_date }}">
+                            <input type="hidden" name="user_id"
+                                    value="{{ $user->user_id }}">
 
-                            <button class="btn btn-outline-info p-3 mt-4">
-                                Pagar Restante
-                            </button>
-                    </form>
-                </div>
-                @endif
+                                <button class="btn btn-outline-info p-3 mt-4">
+                                    Pagar Restante
+                                </button>
+                        </form>
+                    </div>
 
             @endif
 
@@ -124,6 +114,15 @@
 
     <script>
 
+        const totalValueOfPurchase = document.querySelector('#totals')
+        const paymentBtn = document.querySelector('#payment-form')
+            console.log(totalValueOfPurchase);
+        // console.log(typeof totalValueOfPurchase.innerText, paymentBtn)
+        if(totalValueOfPurchase.innerText == '0,00') {
+            totalValueOfPurchase.children.remove()
+
+        }
+
         document.querySelectorAll('#deleteForm').forEach(e => {
             e.addEventListener('submit', e => {
 
@@ -136,7 +135,9 @@
 
                 setTimeout(() => {
                     if(confirm("DELETAR ESSE PRODUTO?\n\n Produtos - "
-                                +productName+"\n Quantidade - "+qtty)) {
+                                +productName+"\n Quantidade - "+qtty)
+                    )
+                    {
                         e.target.submit()
                     } else {
                         e.target.parentElement.parentElement.classList.remove('border', 'border-danger')

@@ -27,6 +27,7 @@ Route::post('/entrar', [Home::class, 'userAccess']);
 Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/autenticado', [User::class, 'index'])->name('user-area');
+    Route::post('/deleteclient/{id}', [User::class, 'deleteClient'])->name('delete-client');
     Route::post('/logout', [User::class, 'destroy']);
 
     Route::get('/create', [CreateCient::class, 'createClientForm'])
