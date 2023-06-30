@@ -1,5 +1,5 @@
 <x-header-and-nav>
-{{-- @dd($total) --}}
+{{-- olhar pq aparece saldo devedor na tela ainda que seja zero --}}
     <div class="d-flex justify-content-around">
         <div class="py-2">
             <span class="h4">{{ $user->name }}</span>
@@ -20,9 +20,9 @@
         <li class="list-group-item d-flex justify-content-around">
 
             <div class="text-center">
-                <span id="totals">
+                <span id="msg-paid">
                     <p>R$
-                        <span class="text-danger">
+                        <span class="text-danger" id="totals">
                             {{ substr_replace(number_format($total, 2), ',', -3, -2) }}
                         </span>
                         <p>Saldo Devedor</p>
@@ -114,12 +114,13 @@
 
     <script>
 
+        const form = document.querySelector('#msg-paid')
         const totalValueOfPurchase = document.querySelector('#totals')
         const paymentBtn = document.querySelector('#payment-form')
-            console.log(totalValueOfPurchase);
-        // console.log(typeof totalValueOfPurchase.innerText, paymentBtn)
+
         if(totalValueOfPurchase.innerText == '0,00') {
-            totalValueOfPurchase.children.remove()
+            paymentBtn.style = 'display: none'
+            form.innerHTML = "<span>Tudo pago aqui!</span>"
 
         }
 
