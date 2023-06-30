@@ -19,7 +19,7 @@ class CreateCient extends Controller
         if(request()->input('client_without_password')) {
 
             $attributes = request()->validate([
-                'name' => 'required|min:4'
+                'name' => 'required|min:4|unique:users,name'
             ]);
 
             $attributes['celular'] = NULL;
