@@ -14,37 +14,75 @@ class Payments extends Controller
     public static function updatePaymentFromMonth() {
 
         $userClient = request()->input('payment_client');
+
         $currDate = date(now()->format('Y-m-d'));
 
         $totalDebits = Sales::where('sale_user_fk', $userClient)
                             ->join('saled_products', 'saled_date', '=', 'sale_id')
                             ->where('saled_receiver', '')->sum('saled_total');
 
-        Sales::where('sale_user_fk', $userClient)
+        $alreadyPaidFromMonth = Sales::where('sale_user_fk', $userClient)
+                    ->where('sale_date', $currDate)
+                    ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                    ->pluck('monthly_payment');
+
+        if(empty($alreadyPaidFromMonth[0])) {
+            Sales::create([
+                'sale_date' => date(now()),
+                'sale_user_fk' => $userClient
+            ]);
+
+            usleep(0.3);
+
+            $newDate = Sales::where('sale_user_fk', $userClient)
+                            ->where('sale_date', $currDate)->pluck('sale_id')[0];
+
+            GlobalPayments::create([
+                'monthly_payment_date' => $newDate,
+                'monthly_total' => 0,
+                'monthly_paid' => 0,
+                'monthly_payment' => $totalDebits
+            ]);
+
+            Sales::where('sale_user_fk', $userClient)
                         ->join('payments', 'payment_date', '=', 'sale_id')
                         ->where('payment_month', 0)
                         ->update([
                             'payment_month' => 1
                         ]);
 
-        Sales::where('sale_user_fk', $userClient)
+            Sales::where('sale_user_fk', $userClient)
                             ->join('saled_products', 'saled_date', '=', 'sale_id')
                             ->where('saled_receiver', '')
                             ->update([
                                 'saled_receiver' => auth()->user()->name
                             ]);
 
-        $alreadyPaidFromMonth = Sales::where('sale_user_fk', $userClient)
-                    ->where('sale_date', $currDate)
-                    ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
-                    ->pluck('monthly_payment')[0];
+        } else {
 
-        Sales::where('sale_user_fk', $userClient)
-                    ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
-                    ->where('sale_date', $currDate)
-                    ->update([
-                        'monthly_payment' => ((float) $alreadyPaidFromMonth + $totalDebits)
-                    ]);
+            Sales::where('sale_user_fk', $userClient)
+                        ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                        ->where('sale_date', $currDate)
+                        ->update([
+                            'monthly_payment' => ((float) $alreadyPaidFromMonth[0] + $totalDebits)
+                        ]);
+
+            Sales::where('sale_user_fk', $userClient)
+                        ->join('payments', 'payment_date', '=', 'sale_id')
+                        ->where('payment_month', 0)
+                        ->update([
+                            'payment_month' => 1
+                        ]);
+
+            Sales::where('sale_user_fk', $userClient)
+                            ->join('saled_products', 'saled_date', '=', 'sale_id')
+                            ->where('saled_receiver', '')
+                            ->update([
+                                'saled_receiver' => auth()->user()->name
+                            ]);
+
+        }
+
 
 
         return redirect('user/'.$userClient)->with('pagamento-mensal', 'Pagamento abatido do total!');

@@ -32,20 +32,20 @@
 
             @if (auth()->user()->isadmin || auth()->user()->isfunc)
 
-                    <div id="payment-form">
-                        <form action="/payallsale" method="post">
-                            @csrf
+                <div id="payment-form">
+                    <form action="/payallsale" method="post">
+                        @csrf
 
-                            <input type="hidden" name="datavenda"
-                                    value="{{ $details[0]->saled_date }}">
-                            <input type="hidden" name="user_id"
-                                    value="{{ $user->user_id }}">
+                        <input type="hidden" name="datavenda"
+                                value="{{ $details[0]->saled_date }}">
+                        <input type="hidden" name="user_id"
+                                value="{{ $user->user_id }}">
 
-                                <button class="btn btn-outline-info p-3 mt-4">
-                                    Pagar Restante
-                                </button>
-                        </form>
-                    </div>
+                            <button class="btn btn-outline-info p-3 mt-4">
+                                Pagar Restante
+                            </button>
+                    </form>
+                </div>
 
             @endif
 
