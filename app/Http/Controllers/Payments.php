@@ -44,26 +44,6 @@ class Payments extends Controller
                 'monthly_payment' => $totalDebits
             ]);
 
-            Sales::where('sale_user_fk', $userClient)
-                        ->join('payments', 'payment_date', '=', 'sale_id')
-                        ->where('payment_month', 0)
-                        ->update([
-                            'payment_month' => 1
-                        ]);
-
-            Sales::where('sale_user_fk', $userClient)
-                            ->join('saled_products', 'saled_date', '=', 'sale_id')
-                            ->where('saled_receiver', '')
-                            ->update([
-                                'saled_receiver' => auth()->user()->name
-                            ]);
-
-                            ////metodo em an[alise pra subir
-            // Sales::where('sale_user_fk', $userClient)
-            //                 ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
-            //                 ->where('monthly_payment', '<', 0)
-            //                 ->update([ 'monthly_payment' => 0 ]);
-
         } else {
 
             Sales::where('sale_user_fk', $userClient)
@@ -73,27 +53,27 @@ class Payments extends Controller
                             'monthly_payment' => ((float) $alreadyPaidFromMonth[0] + $totalDebits)
                         ]);
 
-            Sales::where('sale_user_fk', $userClient)
+        }
+
+        Sales::where('sale_user_fk', $userClient)
+                        ->join('saled_products', 'saled_date', '=', 'sale_id')
+                        ->where('saled_receiver', '')
+                        ->update([
+                            'saled_receiver' => auth()->user()->name
+                        ]);
+
+        Sales::where('sale_user_fk', $userClient)
                         ->join('payments', 'payment_date', '=', 'sale_id')
                         ->where('payment_month', 0)
                         ->update([
                             'payment_month' => 1
                         ]);
 
-            Sales::where('sale_user_fk', $userClient)
-                            ->join('saled_products', 'saled_date', '=', 'sale_id')
-                            ->where('saled_receiver', '')
-                            ->update([
-                                'saled_receiver' => auth()->user()->name
-                            ]);
+        Sales::where('sale_user_fk', $userClient)
+                            ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+                            ->where('monthly_payment', '<', 0)
+                            ->update([ 'monthly_payment' => 0 ]);
 
-                            ////metodo em an[alise pra subir
-            // Sales::where('sale_user_fk', $userClient)
-            //                 ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
-            //                 ->where('monthly_payment', '<', 0)
-            //                 ->update([ 'monthly_payment' => 0 ]);
-
-        }
 
 
 
