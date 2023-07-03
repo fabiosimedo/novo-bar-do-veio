@@ -73,7 +73,7 @@ class User extends Controller
         $saleDetailsId = Sales::where('sale_user_fk', $request->input('user'))
                         ->where('sale_date', $request->input('date'))
                         ->get()[0];
-
+                        // return $saleDetailsId->sale_date;
         $saledProducts = SaledProducts::where('saled_date', $saleDetailsId['sale_id'])
                         ->orderBy('saled_date', 'DESC')->get();
 

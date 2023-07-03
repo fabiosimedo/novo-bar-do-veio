@@ -1,10 +1,10 @@
 <x-header-and-nav>
-{{-- olhar pq aparece saldo devedor na tela ainda que seja zero --}}
+
     <div class="d-flex justify-content-around">
         <div class="py-2">
             <span class="h4">{{ $user->name }}</span>
             <p class="text-center">
-                {{ \Carbon\Carbon::parse($date->saled_date)
+                {{ \Carbon\Carbon::parse($date->sale_date)
                     ->format('d/m/Y') }}
             </p>
         </div>

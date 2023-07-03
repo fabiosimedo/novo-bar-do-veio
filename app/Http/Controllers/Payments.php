@@ -58,6 +58,12 @@ class Payments extends Controller
                                 'saled_receiver' => auth()->user()->name
                             ]);
 
+                            ////metodo em an[alise pra subir
+            // Sales::where('sale_user_fk', $userClient)
+            //                 ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+            //                 ->where('monthly_payment', '<', 0)
+            //                 ->update([ 'monthly_payment' => 0 ]);
+
         } else {
 
             Sales::where('sale_user_fk', $userClient)
@@ -80,6 +86,12 @@ class Payments extends Controller
                             ->update([
                                 'saled_receiver' => auth()->user()->name
                             ]);
+
+                            ////metodo em an[alise pra subir
+            // Sales::where('sale_user_fk', $userClient)
+            //                 ->join('global_payments', 'monthly_payment_date', '=', 'sale_id')
+            //                 ->where('monthly_payment', '<', 0)
+            //                 ->update([ 'monthly_payment' => 0 ]);
 
         }
 
