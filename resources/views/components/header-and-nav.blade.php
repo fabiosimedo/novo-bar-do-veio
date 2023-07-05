@@ -83,6 +83,7 @@
             });
 
             const inputArea = document.querySelector('#bring-user-up')
+            const allUsers = document.querySelectorAll('#user-name')
 
             inputArea.addEventListener('input', inputValueToSearch)
 
@@ -91,7 +92,15 @@
                 navBar.classList.add('fixed-top')
                 if(e.target.value ===  '') navBar.classList.remove('fixed-top')
 
-                ///// buscar no banco usando query é bem mais fácil pelo visto
+                allUsers.forEach(el => {
+                    if(e.target.value === el.innerText[0])
+                        el.parentElement.classList.add('border', 'border-danger')
+
+                    if(e.target.value ===  '')
+                        el.parentElement.classList.remove('border', 'border-danger')
+                })
+
+
             }
 
         </script>
