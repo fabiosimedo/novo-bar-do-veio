@@ -69,39 +69,33 @@
 
         <script>
 
-            const alerta = document.querySelectorAll('#alertMessage')
-
-            alerta.forEach(element => {
-                console.log(element)
+            document.querySelectorAll('#alertMessage').forEach(element => {
                 if(element !== null) {
-
                     setTimeout(() => {
                         element.remove()
-                    }, 4000);
-
+                    }, 4000)
                 }
-            });
+            })
 
-            const inputArea = document.querySelector('#bring-user-up')
-            const allUsers = document.querySelectorAll('#user-name')
+            if (window.location.href.substr(-11) === 'autenticado') {
+                document.querySelector('#bring-user-up')
+                    .addEventListener('input', e => {
+                        const allUsers = document.querySelectorAll('#user-name')
+                        const navBar = document.querySelector('#nav-bar')
+                        navBar.classList.add('fixed-top')
+                        if(e.target.value ===  '') navBar.classList.remove('fixed-top')
 
-            inputArea.addEventListener('input', inputValueToSearch)
+                        allUsers.forEach(el => {
+                            if(e.target.value === el.innerText[0])
+                                el.parentElement.classList.add('border', 'border-danger')
 
-            function inputValueToSearch(e) {
-                const navBar = document.querySelector('#nav-bar')
-                navBar.classList.add('fixed-top')
-                if(e.target.value ===  '') navBar.classList.remove('fixed-top')
+                            if(e.target.value ===  '')
+                                el.parentElement.classList.remove('border', 'border-danger')
+                        })
 
-                allUsers.forEach(el => {
-                    if(e.target.value === el.innerText[0])
-                        el.parentElement.classList.add('border', 'border-danger')
-
-                    if(e.target.value ===  '')
-                        el.parentElement.classList.remove('border', 'border-danger')
-                })
-
-
+                    })
             }
+
 
         </script>
 
