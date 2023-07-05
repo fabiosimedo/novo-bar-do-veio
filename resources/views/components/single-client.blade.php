@@ -67,7 +67,7 @@
             @endif
 
 
-            @if (auth()->user()->isadmin)
+            @if (auth()->user()->isadmin || auth()->user()->isfunc)
 
                 @if($user->celular === null)
                     <div>
