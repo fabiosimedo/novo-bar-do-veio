@@ -110,7 +110,7 @@ class User extends Controller
         $userDetail = ModelsUser::where('user_id', $id)->get();
 
         return view('components.forms.insertProducts', [
-            'products' => Product::all(),
+            'products' => Product::orderBy('product_name', 'ASC')->get(),
             'user' => $userDetail
         ]);
     }
