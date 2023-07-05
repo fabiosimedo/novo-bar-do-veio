@@ -136,7 +136,42 @@
 @endif
 
 @if (request()->routeIs('update-password-and-cellphone'))
-    <div>rota pra criar celular e senha</div>
+<form method="post" action="/updatepassworandcellphone">
+
+    @csrf
+
+    <p class="mt-2">Adicionando celular e senha para</p>
+    <p class="h1">{{ $user[0]->name }}</p>
+    <div class="form-group">
+        <label for="celular" class="form-label mt-4">Celular (Ex: 35999999999 Onze dígitos)</label>
+        <input type="text" name="celular"
+               class="form-control" placeholder="Cadastrar celular"
+               value="{{ old('celular') }}" id="celular" required>
+
+        @error('celular')
+            <p class="text-danger mt-2">{{ $message }}</p>
+        @enderror
+    </div>
+    <div class="form-group">
+        <label for="senha" class="form-label mt-4">Senha (entre 6 e 8 caractéres)</label>
+        <input type="password" name="password"
+               class="form-control"
+               placeholder="Cadastrar senha" id="senha" required>
+
+        @error('password')
+            <p class="text-danger mt-2">A senha precisa ter entre 6 e 8 caractéres</p>
+        @enderror
+
+    </div>
+            <input type="hidden" name="user_id"
+                  value="{{ $user[0]->user_id }}"
+                  class="form-control">
+
+    <button type="submit"
+            class="btn btn-outline-primary mt-4 btn-lg"
+            style="width: 100%">Cadastrar Celular</button>
+
+</form>
 @endif
 
 <div class="text-center mt-4">

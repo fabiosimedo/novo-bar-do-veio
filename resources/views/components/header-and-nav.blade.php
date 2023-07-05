@@ -6,14 +6,15 @@
 
         <link rel="stylesheet" href="{{ url('bootstrap.min.css') }}">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous" defer></script>
-        <link rel="icon" href="{{ public_path('favicon.png') }}" type="image/x-icon">
+        {{-- <link rel="icon" href="{{ public_path('favicon.png') }}" type="image/x-icon"> --}}
         <title>{{ auth()->user()->name ?? 'Bar do Véio' }}</title>
     </head>
 
     <body>
+
         <div class="container">
 
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="nav-bar">
                 <div class="container-fluid">
                     <a class="navbar-brand"
                         @auth
@@ -40,15 +41,16 @@
                             <form class="d-flex bt-5 mb-2">
                                 <input class="form-control me-sm-2 mt-3 py-3"
                                     type="text"
-                                    placeholder="Procurar por nome ou data"
-                                    {{-- nome admin func data cliente --}}
+                                    placeholder="Procurar por Nome"
+                                    id="bring-user-up"
                                     autofocus >
                             </form>
 
                         @endauth
 
                         <a href="https://fabiosimedo.github.io/bar-do-veio/index.html"
-                           class="py-3 h5 btn btn-dark" target="_blank">Ir para Site do Bar do Véio</a>
+                           class="py-3 h5 btn btn-dark" target="_blank">
+                                                        Ir para Site do Bar do Véio</a>
 
                     </div>
                 </div>
@@ -79,6 +81,18 @@
 
                 }
             });
+
+            const inputArea = document.querySelector('#bring-user-up')
+
+            inputArea.addEventListener('input', inputValueToSearch)
+
+            function inputValueToSearch(e) {
+                const navBar = document.querySelector('#nav-bar')
+                navBar.classList.add('fixed-top')
+                if(e.target.value ===  '') navBar.classList.remove('fixed-top')
+
+                ///// buscar no banco usando query é bem mais fácil pelo visto
+            }
 
         </script>
 

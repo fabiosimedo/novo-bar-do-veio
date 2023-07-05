@@ -119,7 +119,7 @@
         const paymentBtn = document.querySelector('#payment-form')
 
         if(totalValueOfPurchase.innerText == '0,00') {
-            paymentBtn.style = 'display: none'
+            if(paymentBtn) paymentBtn.style = 'display: none'
             form.innerHTML = "<span>Tudo pago aqui!</span>"
 
         }

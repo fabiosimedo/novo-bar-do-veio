@@ -47,11 +47,17 @@
 
     @foreach ($users as $user)
         <ul class="list-group">
-           <a href="user/{{ $user->user_id }}" style="text-decoration: none">
+           <a href="user/{{ $user->user_id }}"
+              style="text-decoration: none"
+              value="{{ $user->name }}"
+              id="user-ancor-tag"
+              class=""
+              >
 
                 @if (! $user->isadmin)
-                    <li class="list-group-item mt-1 py-3 d-flex justify-content-between">
-                        {{ $user->name }}
+                    <li
+                        class="list-group-item mt-1 py-3 d-flex justify-content-between">
+                            <span id="user-name">{{ $user->name }}</span>
 
                         @if (auth()->user()->isadmin)
                             <form action="deleteclient/{{ $user->user_id }}"
