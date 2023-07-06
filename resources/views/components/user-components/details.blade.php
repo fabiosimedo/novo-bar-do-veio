@@ -61,7 +61,7 @@
             <th scope="col"></th>
             <th scope="col">Total</th>
             <th scope="col">Vendeu</th>
-            <th scope="col">Recebeu</th>
+            <th scope="col">Pago</th>
             @if (auth()->user()->isadmin || auth()->user()->isfunc)
                 <th scope="col"></th>
             @endif
