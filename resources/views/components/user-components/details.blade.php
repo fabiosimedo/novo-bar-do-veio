@@ -61,7 +61,7 @@
             <th scope="col"></th>
             <th scope="col">Total</th>
             <th scope="col">Vendeu</th>
-            <th scope="col">Pago</th>
+            <th scope="col">Recebeu</th>
             @if (auth()->user()->isadmin || auth()->user()->isfunc)
                 <th scope="col"></th>
             @endif
@@ -110,7 +110,9 @@
                 </tr>
             @endforeach
         </tbody>
-      </table>
+    </table>
+    <div class="col-6 d-flex justify-content-around border border-white px-4 py-2" id="show-total">
+    </div>
 
     <script>
 
@@ -126,10 +128,8 @@
 
         document.querySelectorAll('#deleteForm').forEach(e => {
             e.addEventListener('submit', e => {
-
                 e.preventDefault()
                 const element = e.target.parentElement.parentElement
-                console.log(element)
                 element.classList.add('border', 'border-danger')
                 const productName = element.children[0].innerText
                 const qtty = element.children[1].innerText
@@ -147,6 +147,18 @@
             })
         })
 
+
+        const arrayTotal = []
+
+        let totalSum = 0
+        document.querySelectorAll('#single-sale')
+                .forEach(e => (totalSum += parseFloat(e.innerText)))
+
+        (function () {
+            document.querySelector('#show-total').innerHTML = `
+                <span>Total</span> <span>R$ ${totalSum.toFixed(2)}</span>
+            `
+        }(totalSum))
     </script>
 
 </x-header-and-nav>
