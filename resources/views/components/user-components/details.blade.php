@@ -111,15 +111,14 @@
             @endforeach
         </tbody>
     </table>
-    <div class="col-6 d-flex justify-content-around border border-white px-4 py-2" id="show-total">
-    </div>
+    <div class="col-6 d-flex justify-content-around px-4" id="show-total"></div>
 
     <script>
 
         const form = document.querySelector('#msg-paid')
         const totalValueOfPurchase = document.querySelector('#totals')
         const paymentBtn = document.querySelector('#payment-form')
-
+''
         if(totalValueOfPurchase.innerText == '0,00') {
             if(paymentBtn) paymentBtn.style = 'display: none'
             form.innerHTML = "<span>Tudo pago aqui!</span>"
@@ -148,11 +147,9 @@
         })
 
 
-        const arrayTotal = []
-
         let totalSum = 0
         document.querySelectorAll('#single-sale')
-                .forEach(e => (totalSum += parseFloat(e.innerText)))
+                    .forEach(e => (totalSum += parseFloat(e.innerText)))
 
         (function () {
             document.querySelector('#show-total').innerHTML = `
