@@ -67,6 +67,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/newpassword', [EditClient::class, 'editClientPassword']);
 
+    Route::get('/editusername/{user:user_id}', [EditClient::class, 'editClientName']);
+    Route::post('/editusername/{user:user_id}', [EditClient::class, 'editClientNameOnDatabase']);
+
 
 
 

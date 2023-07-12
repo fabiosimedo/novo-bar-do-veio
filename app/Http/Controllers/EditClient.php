@@ -54,4 +54,24 @@ class EditClient extends Controller
         return redirect($route)
             ->with('newpassword', 'Celular e senha cadastrados com sucesso!');
     }
+
+    public function editClientName($id) {
+        if(! auth()->user()->isadmin) {
+            return back();
+        }
+        return view('components.admin-components.edit-client-name', [
+            'user' => User::where('user_id', $id)->get()[0]
+        ]);
+    }
+
+    public function editClientNameOnDatabase() {
+        $userToRename =  request()->input('user_id');
+        $nameToUpdate = request()->input('user_new_name');
+
+        User::where('user_id', $userToRename)->update([
+            'name' => $nameToUpdate
+        ]);
+
+        return redirect('/autenticado');
+    }
 }

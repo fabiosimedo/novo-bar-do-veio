@@ -15,9 +15,13 @@
                 <li class="list-group-item d-flex justify-content-between">
 
                     <div>
-                        <p class="h3 text-center">
-                            {{ $user->name }}
-                        </p>
+
+                        <a href="/editusername/{{ $user->user_id }}">
+                            <p class="h3 text-center">
+                                {{ $user->name }}
+                            </p>
+                        </a>
+
                         @if ($user->celular === null)
                             <small id="emailHelp" class="form-text text-muted">
                                 Usuário sem celular cadastrado!
