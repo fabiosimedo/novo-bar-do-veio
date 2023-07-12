@@ -10,7 +10,8 @@
         <input type="text" name="name"
                class="form-control"
                placeholder="Cadastrar nome"
-               value="{{ old('name') }}" required>
+               value="{{ old('name') }}"
+               style="font-family: sans-serif" required>
 
         @error('name')
             <p class="text-danger mt-2">{{ $message }}</p>

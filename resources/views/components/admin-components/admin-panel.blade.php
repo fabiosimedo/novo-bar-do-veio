@@ -21,26 +21,25 @@
 
     <div>
 
-        @if (auth()->user()->isfunc || auth()->user()->isadmin)
-        <div class="d-flex justify-content-between py-3">
+        @if (auth()->user()->isadmin)
+            <div class="d-flex justify-content-between py-3">
 
-            <a href="/create"
-                class="btn btn-primary-outline py-2 px-3 mt-2">Usuário</a>
-            <a href="/addproduct"
-               class="btn btn-primary-outline py-2 px-3 mt-2">Produto</a>
-            @if (auth()->user()->isadmin)
+                <a href="/create"
+                    class="btn btn-primary-outline py-2 px-3 mt-2">Usuário</a>
+                <a href="/addproduct"
+                class="btn btn-primary-outline py-2 px-3 mt-2">Produto</a>
+
                 <a href="/checkstorage"
-                class="btn btn-primary-outline py-2 px-3 mt-2">Estoque</a>
+                    class="btn btn-primary-outline py-2 px-3 mt-2">Estoque</a>
 
-            @endif
 
-        </div>
-        <div>
-
-            <a href="/create/avulso"
-               class="btn btn-primary-outline py-2 px-3 m-2 w-100">Venda Avulso</a>
-
-        </div>
+            </div>
+        @endif
+        @if (auth()->user()->isadmin || auth()->user()->isfunc)
+            <div>
+                <a href="/create/avulso"
+                    class="btn btn-primary-outline py-2 px-3 m-2 w-100">Venda Avulso</a>
+            </div>
         @endif
 
     </div>
