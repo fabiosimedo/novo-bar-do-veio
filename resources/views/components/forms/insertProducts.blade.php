@@ -19,7 +19,7 @@
               @foreach ($products as $product)
                 <div class="mt-2 col-6 p-3">
                   <p class="h4" id="product-name">{{ $product->product_name }}</p>
-                  <input type="text"
+                  <input type="number"
                          name="products[{{ $product->product_name }}]"
                          value="{{ old('products[]') }}"
                          placeholder="Quantidade"
