@@ -26,21 +26,31 @@
 
                 <a href="/create"
                     class="btn btn-primary-outline py-2 px-3 mt-2">Usuário</a>
+
                 <a href="/addproduct"
                 class="btn btn-primary-outline py-2 px-3 mt-2">Produto</a>
 
                 <a href="/checkstorage"
                     class="btn btn-primary-outline py-2 px-3 mt-2">Estoque</a>
 
-
             </div>
-        @endif
-        @if (auth()->user()->isadmin || auth()->user()->isfunc)
             <div>
                 <a href="/create/avulso"
                     class="btn btn-primary-outline py-2 px-3 m-2 w-100">Venda Avulso</a>
             </div>
         @endif
+
+        @if (auth()->user()->isfunc)
+            <div class="d-flex justify-content-between py-3">
+                    <a href="/create"
+                        class="btn btn-primary-outline py-4 px-5 mt-2 mb-3">Usuário</a>
+
+                    <a href="/create/avulso"
+                        class="btn btn-primary-outline py-4 px-5 mt-2 mb-3">Venda Avulso</a>
+
+            </div>
+        @endif
+
 
     </div>
 
