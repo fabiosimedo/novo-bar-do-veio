@@ -17,7 +17,6 @@ class CreateCient extends Controller
     public function createClient(){
 
         if(request()->input('client_without_password')) {
-            return request()->input('name');
 
             $attributes = request()->validate([
                 'name' => 'required|min:4|unique:users,name'
