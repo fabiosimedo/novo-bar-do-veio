@@ -111,7 +111,12 @@
             @endforeach
         </tbody>
     </table>
-    <div class="col-6 d-flex justify-content-around px-4" id="show-total"></div>
+
+    <div class="col-6 d-flex justify-content-around px-4">
+        <p>
+            Total Comprado R${{ substr_replace(number_format($totalFromDay, 2), ',', -3, -2) }}
+        </p>
+    </div>
 
     <script>
 
@@ -146,16 +151,6 @@
             })
         })
 
-
-        let totalSum = 0
-        document.querySelectorAll('#single-sale')
-                    .forEach(e => (totalSum += parseFloat(e.innerText)))
-
-        (function () {
-            document.querySelector('#show-total').innerHTML = `
-                <span>Total</span> <span>R$ ${totalSum.toFixed(2)}</span>
-            `
-        }(totalSum))
     </script>
 
 </x-header-and-nav>

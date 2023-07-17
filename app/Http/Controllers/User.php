@@ -27,7 +27,6 @@ class User extends Controller
 
             return view('components.admin-components.admin-panel', [
                 'users' => $user->orderBy('name', 'ASC')->get(),
-                // 'total' => Total pra saber queem está devendo
             ]);
         }
 
@@ -83,6 +82,9 @@ class User extends Controller
                                                         ->where('saled_receiver', '')
                                                         ->sum('saled_total');
 
+        $totalSaledFromDay2 = SaledProducts::where('saled_date', $saleDetailsId['sale_id'])->sum('saled_total');
+
+
         $totalCalculatedPayment =
                 ModelsPayments::where('payment_date', $saleDetailsId['sale_id'])
                     ->selectRaw('(payment_total_day-payment_paid_day) as totalpaymentday')->get()[0];
@@ -95,6 +97,7 @@ class User extends Controller
             'date' => $saleDetailsId,
             'details' => $saledProducts,
             'total' => (float) ($totalSaledFromDay),
+            'totalFromDay' => (float) ($totalSaledFromDay2),
             'totalpaymentday' => $totalCalculatedPayment['totalpaymentday'],
             'monthpayment' => $monthPayment
         ]);
