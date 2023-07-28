@@ -24,7 +24,6 @@ class User extends Controller
 
         if(auth()->user()->isadmin || auth()->user()->isfunc) {
 
-
             return view('components.admin-components.admin-panel', [
                 'users' => $user->orderBy('name', 'ASC')->get(),
             ]);

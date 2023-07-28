@@ -109,7 +109,9 @@
                     e.target.parentElement.parentElement.classList.remove('border', 'border-danger')
                 }
             }, 400)
+
         })
+
     })
 
 </script>

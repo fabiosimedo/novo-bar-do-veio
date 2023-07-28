@@ -48,7 +48,6 @@
                                 {{ \Carbon\Carbon::parse($sale->sale_date)
                                                 ->format('d/m/Y') }}
                             </span>
-                                    {{-- lógica para descobrir data da dívida --}}
                         </li>
                     </button>
                 </form>

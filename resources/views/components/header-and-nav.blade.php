@@ -86,11 +86,17 @@
                         if(e.target.value ===  '') navBar.classList.remove('fixed-top')
 
                         allUsers.forEach(el => {
-                            if(e.target.value === el.innerText[0])
+                            if(e.target.value === el.innerText[0]) {
                                 el.parentElement.classList.add('border', 'border-danger')
+                                return
+                            }
 
-                            if(e.target.value ===  '')
+                            if(e.target.value ===  '') {
                                 el.parentElement.classList.remove('border', 'border-danger')
+                                return
+                            }
+
+                            return
                         })
 
                     })
