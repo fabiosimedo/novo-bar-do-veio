@@ -63,7 +63,7 @@
               class=""
               >
 
-                @if (! $user->isadmin)
+                {{-- @if (! $user->isadmin) --}}
                     <li
                         class="list-group-item mt-1 py-3 d-flex justify-content-between">
                             <span id="user-name">{{ $user->name }}</span>
@@ -86,7 +86,7 @@
                         @endif
 
                     </li>
-                @endif
+                {{-- @endif --}}
 
            </a>
         </ul>
