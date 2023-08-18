@@ -66,7 +66,7 @@
                     value="
                     {{ request()->routeIs('create-client-avulso-confirm') ? 0 : request()->user_id }}">
 
-            <div class="d-flex justify-content-around">
+            <div class="d-flex justify-content-around" id="btns-to-hide">
                 <button type="submit"
                         class="btn btn-primary py-2"
                         id="submit-button">
@@ -87,11 +87,10 @@
 <script>
 
     const form_group = document.querySelector('#form-group')
+    const btns_to_hide = document.querySelector('#btns-to-hide')
     const submit_button = document.querySelector('#submit-button')
     const warning = document.querySelector('#user-confirm')
     const exampleModalLabel = document.querySelector('#exampleModalLabel')
-
-    console.log(form_group.children.length)
 
     if(form_group.children.length == 0) {
         form_group.innerHTML = `
@@ -102,6 +101,14 @@
         warning.remove()
         submit_button.remove()
     }
+
+    submit_button.addEventListener('click', e => {
+        setTimeout(() => {
+            btns_to_hide.innerHTML =
+                `<h1 class="text-center text-secondary">
+                                Processando compra...</h1>`
+        }, 100)
+    })
 
 </script>
 </x-header-and-nav>
