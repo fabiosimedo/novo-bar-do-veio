@@ -176,7 +176,7 @@
 @endif
 
 <div class="text-center mt-4">
-    <a onclick="history.back()" class="btn btn-primary-outline mt-4">Voltar</a>
+    <a href="{{ route('user-area') }}" class="btn btn-primary-outline mt-4">Voltar</a>
 </div>
 
 

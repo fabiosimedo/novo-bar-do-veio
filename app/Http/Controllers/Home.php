@@ -11,7 +11,14 @@ class Home extends Controller
     public function userAccess() {
         $attributes = request()->validate([
             'celular' => 'required|min:11|max:11',
-            'password' => 'required|min:6|max:6'
+            'password' => 'required|min:6'
+        ], [
+            'celular.required' => 'O número de celular é obrigatório.',
+            'celular.min' => 'O número de celular deve conter exatamente 11 dígitos.',
+            'celular.max' => 'O número de celular deve conter exatamente 11 dígitos.',
+
+            'password.required' => 'A senha é obrigatória.',
+            'password.min' => 'A senha deve conter no mínimo 6 caracteres.'
         ]);
 
         if(auth()->attempt($attributes)) {

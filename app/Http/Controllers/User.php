@@ -305,4 +305,19 @@ class User extends Controller
         auth()->logout($user);
         return redirect('/')->with('deslogado', 'Até logo...');
     }
+
+    public function nonClientPurcahse(Request $request)
+    {
+        $salesWithProducts = \DB::table('sales')
+                ->join('saled_products', 'sales.sale_id', '=', 'saled_products.saled_date')
+                ->where('sales.sale_user_fk', 0)
+                ->select('sales.sale_date', 'saled_products.saled_name', 'saled_products.saled_qtty', 'saled_products.saled_total', 'saled_products.saled_saler')
+                ->orderByDesc('sales.sale_date')
+                ->get();
+
+        return view('components.user-components.non-client', [
+            'salesWithProducts' => $salesWithProducts
+        ]);
+    }
+
 }

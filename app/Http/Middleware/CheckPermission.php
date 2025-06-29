@@ -22,7 +22,7 @@ class CheckPermission
         $admin = User::where('name', auth()->user()->name)->pluck('name');
 
 
-        if($admin[0] == 'Fabio Simedo' || $admin[0] == 'Kezzia Avigo') {
+        if($admin[0] == 'Jaqueline' || $admin[0] == 'Antônio') {
 
             return $next($request);
         }

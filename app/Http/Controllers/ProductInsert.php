@@ -74,23 +74,27 @@ class ProductInsert extends Controller
      */
     public function edit($id)
     {
-        return $id;
-        //// criar rota para editar produtos
-        // return view('components.admin-components.product-detail', [
-        //     'product' => Product::where('product_id', $id)->get()
-        // ]);
+        return view('products.edit', [
+            'product' => Product::where('product_id', $id)->first()
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'product_name' => 'required|string|max:255',
+            'product_qtty' => 'required|integer|min:0',
+            'product_cost_price' => 'required|numeric|min:0',
+            'product_price' => 'required|numeric|min:0',
+        ]);
+
+        $product = Product::where('product_id', $id)->firstOrFail();
+
+        $product->update($validated);
+
+        return redirect()->route('checkstorage', ['product' => $product->product_id])
+                        ->with('success', 'Produto atualizado com sucesso!');
+
     }
 
     /**
@@ -101,9 +105,11 @@ class ProductInsert extends Controller
      */
     public function destroy(Product $product)
     {
+        $nomeProduto = $product->product_name;
+
         Product::where('product_id', $product->product_id)->delete();
 
-        return redirect()->route('inserting-new-products')
-                ->with('deleted', 'Produto deletado!');
+        return redirect('/checkstorage')
+            ->with('deleted', "Produto (<strong>{$nomeProduto}</strong>) deletado com sucesso!");
     }
 }
