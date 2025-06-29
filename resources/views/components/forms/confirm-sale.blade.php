@@ -1,6 +1,10 @@
 <x-header-and-nav>
 
 <div>
+    @php
+        $temProdutos = false;
+    @endphp
+
     @if (request()->routeIs('create-client-avulso-confirm'))
         <form action="/create/avulso" method="post">
     @endif
@@ -15,31 +19,36 @@
 
                 <div class="form-group" id="form-group">
                     @php
-                    foreach($products as $key => $product){
-                        if($product === null || $key === '_token'
-                            || $key === 'user_id' || $key === 'name') {
-                            echo '';
-                        } else {
-                            echo "
-                            <li class='d-flex mt-2
-                                       justify-content-center'>
+                    if (is_iterable($products)) {
+                        $temProdutos = true;
 
-                                <div class='col-8'>
-                                    <input type='text' value='$key'
-                                        class='form-control'
-                                        readonly>
-                                </div>
+                        foreach($products as $key => $product){
+                            if($product === null || $key === '_token'
+                                || $key === 'user_id' || $key === 'name') {
+                                echo '';
+                            } else {
+                                echo "
+                                <li class='d-flex mt-2
+                                        justify-content-center'>
 
-                                <div class=''>
-                                    <input type='text' name='products[$key]'
-                                           value='$product'
-                                           class='form-control'
-                                           placeholder='$key'
-                                           readonly>
-                                </div>
-                            </li>";
+                                    <div class='col-8'>
+                                        <input type='text' value='$key'
+                                            class='form-control'
+                                            readonly>
+                                    </div>
+
+                                    <div class=''>
+                                        <input type='text' name='products[$key]'
+                                            value='$product'
+                                            class='form-control'
+                                            placeholder='$key'
+                                            readonly>
+                                    </div>
+                                </li>";
+                            }
+                        }} else {
+                            echo "<div class='alert alert-warning'>Nenhum produto encontrado.</div>";
                         }
-                    }
                     @endphp
                 </div>
 
@@ -69,7 +78,8 @@
             <div class="d-flex justify-content-around" id="btns-to-hide">
                 <button type="submit"
                         class="btn btn-primary py-2"
-                        id="submit-button">
+                        id="submit-button"
+                        {{ !$temProdutos ? 'disabled' : '' }}>
                     <span class="h1 px-5">OK</span>
                 </button>
 

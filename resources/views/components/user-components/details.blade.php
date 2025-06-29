@@ -77,11 +77,11 @@
                             {{ substr_replace($detail->saled_total, ',', -3, -2) }}
                         </span>
                     </td>
-                    <td>{{ substr($detail->saled_saler, 0, 6) }}</td>
+                    <td>{{ substr($detail->saled_saler, 0, 9) }}</td>
                     <td>
                         @if ($detail->saled_receiver)
                             <span class="text-success">
-                                    {{ substr($detail->saled_receiver, 0, 6) }}</span>
+                                    {{ substr($detail->saled_receiver, 0, 9) }}</span>
                         @endif
                     </td>
                     @if (auth()->user()->isadmin || auth()->user()->isfunc)

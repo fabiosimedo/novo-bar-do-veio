@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [Home::class, 'index'])->name('login');
 Route::post('/entrar', [Home::class, 'userAccess']);
+Route::post('/create', [Home::class, 'createUser']);
 
 Route::group(['middleware' => ['auth']], function () {
 
@@ -42,8 +43,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/create/avulso', [CreateCient::class, 'clientAvulsoConfirm'])
         ->middleware(CheckPermission::class);
 
-            /// arrumar para isfunc tambem acessar checkpermissiom
-
     Route::get('/user/{id}', [User::class, 'show'])
         ->name('single-client');
     Route::get('/insertproducts/{user:id}', [User::class, 'create'])
@@ -55,6 +54,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/data', [User::class, 'purshaseDetail'])
         ->name('purshase-detail');
+    Route::get('/seeavulso', [User::class, 'nonClientPurcahse'])
+        ->name('non-client-purshase-detail');
     Route::post('/destroysale', [User::class, 'destroysale']);
     Route::post('/destoydate', [User::class, 'destoydate']);
     Route::get('/updatepassword', [EditClient::class, 'index'])
@@ -70,15 +71,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/editusername/{user:user_id}', [EditClient::class, 'editClientName']);
     Route::post('/editusername/{user:user_id}', [EditClient::class, 'editClientNameOnDatabase']);
 
-
-
-
     ##### rotas de pagamentos
     Route::get('/pagamentos/{id}', [Payments::class, 'index']);
     Route::post('/pagamentos', [Payments::class, 'create']);
-
     Route::post('/pagamentos', [Payments::class, 'updatePaymentFromMonth']);
-
     Route::post('/payallsale', [Payments::class, 'update']);
     Route::post('/destroypayment', [Payments::class, 'destroy']);
 
@@ -89,12 +85,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/checkstorage', [ProductInsert::class, 'show'])
         ->middleware(CheckPermission::class)->name('checkstorage');
 
-
-        /////criar view para edição de produtos
     Route::get('/editproduct/{product:product_id}', [ProductInsert::class, 'edit'])
-        ->middleware(CheckPermission::class)->name('editproducts');
-    Route::get('/product-detail/{product:product_id}', [ProductInsert::class, 'edit'])
-        ->middleware('auth');
-    Route::get('/product-delete/{product:product_id}', [ProductInsert::class, 'destroy'])
-        ->middleware('auth');
+            ->middleware(CheckPermission::class)->name('editproducts');
+    Route::put('/updateproduct/{product}', [ProductInsert::class, 'update'])->name('updateproduct');
+    Route::delete('/product-delete/{product}', [ProductInsert::class, 'destroy'])->name('deleteproduct');
 });

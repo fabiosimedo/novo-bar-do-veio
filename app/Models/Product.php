@@ -9,8 +9,15 @@ class Product extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    protected $primaryKey = 'product_id'; // <- aqui dizemos qual é a chave primária
 
-    protected $guarded = [];
+    public $timestamps = false; // <- se você não tiver `created_at` e `updated_at`
+
+    protected $fillable = [
+        'product_name',
+        'product_qtty',
+        'product_cost_price',
+        'product_price',
+    ];
 
 }
