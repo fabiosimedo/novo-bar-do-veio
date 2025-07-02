@@ -4,7 +4,7 @@
 
 ## 🖼️ Tela de Login
 
-![Tela de Login](https://res.cloudinary.com/do5a7dsy8/image/upload/c_thumb,w_200,g_face/v1751289210/site_do_bar/Captura_de_Tela_2025-06-30_a%CC%80s_10.13.15_ktrb1v.png)
+![Tela de Login](https://res.cloudinary.com/do5a7dsy8/image/upload/v1751289210/site_do_bar/Captura_de_Tela_2025-06-30_a%CC%80s_10.13.15_ktrb1v.png)
 ![Tela de Login](https://res.cloudinary.com/do5a7dsy8/image/upload/v1751289031/site_do_bar/Captura_de_Tela_2025-06-30_a%CC%80s_09.53.36_x2q3bi.png)
 
 ### 📝 Instruções para o Login
