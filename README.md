@@ -1,64 +1,57 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# 📲 Tela de Login e Cadastro de Produtos
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## 🖼️ Tela de Login
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![Tela de Login](https://res.cloudinary.com/do5a7dsy8/image/upload/v1751289210/site_do_bar/Captura_de_Tela_2025-06-30_a%CC%80s_10.13.15_ktrb1v.png)
+![Tela de Login](https://res.cloudinary.com/do5a7dsy8/image/upload/v1751289031/site_do_bar/Captura_de_Tela_2025-06-30_a%CC%80s_09.53.36_x2q3bi.png)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 📝 Instruções para o Login
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Aqui você insere seu **celular com DDD sem o zero**, como mostrado na imagem acima (somente os números).
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🖼️ Tela de Cadastro de Produtos
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+![Tela de Cadastro de Produtos](https://res.cloudinary.com/do5a7dsy8/image/upload/v1751289047/site_do_bar/Captura_de_Tela_2025-06-30_a%CC%80s_09.54.28_e9cq9o.png)
 
-## Laravel Sponsors
+### 🛒 Como Salvar os Produtos
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Nesta tela, você pode cadastrar os produtos com seus respectivos preços. Aqui vão alguns exemplos:
 
-### Premium Partners
+- `Limeira (dose)`  
+  Preço: `3`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+- `Maço de paiero`  
+  Preço: `10,5` (coloque o número com vírgula se for preço quebrado)
 
-## Contributing
+- `Limeira (garrafa)`  
+  Preço: `40` (preços maiores que R$10 funcionam normalmente)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+💡 **Importante:** Sempre insira **somente o número** no campo de preço (sem símbolo R$ ou palavras).
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🖼️ Tela de Salvamento de Usuário
 
-## Security Vulnerabilities
+![Tela de Salvamento de Usuário](https://res.cloudinary.com/do5a7dsy8/image/upload/v1751289210/site_do_bar/Captura_de_Tela_2025-06-30_a%CC%80s_10.13.15_ktrb1v.png)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 👤 Salvando Usuários
 
-## License
+Se o cliente quiser **acessar seus dados de compras futuramente**, ele pode pedir para você **salvar uma senha** vinculada ao **número de celular fornecido**.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Se o cliente **não quiser acesso** ou **não se interessar em consultar suas compras depois**, ele pode ser salvo **como usuário sem senha**. Neste caso, ele **não conseguirá ver os dados depois**, o que é ideal para clientes ocasionais.
+
+---
+
+## ✅ Resumo
+
+- Celular com DDD sem o zero
+- Preços numéricos (ex: 3 ou 10,5)
+- Produtos com nome simples (ex: Limeira (dose))
+- Usuários podem ou não ter senha, dependendo se querem consultar os dados depois
+
+---
+
